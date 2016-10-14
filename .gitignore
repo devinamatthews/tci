@@ -1,0 +1,10 @@
+*.o
+*.a
+~*
+*.swp
+Makefile
+config.log
+config.status
+libtool
+.deps
+src/tci.h
