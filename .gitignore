@@ -9,3 +9,4 @@ libtool
 .deps
 src/tci.h
 .git.bak
+autom4te.cache/

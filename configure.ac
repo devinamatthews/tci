@@ -12,20 +12,20 @@ AC_PROG_CC_C99
 # Get user preferences
 #
 
-AC_ARG_WITH([mutex], AS_HELP_STRING([--with-mutex=type],
+AC_ARG_ENABLE([mutex], AS_HELP_STRING([--enable-mutex=type],
     [use a mutex of the specified type, one of auto, pthread_mutex, \
     pthread_spinlock, osx_spinlock, omp_lock, atomic_spinlock @<:@default=auto@:>@]),
-    [mutex_type=$with_mutex], [mutex_type=auto])
+    [mutex_type=$enable_mutex], [mutex_type=auto])
 
-AC_ARG_WITH([barrier], AS_HELP_STRING([--with-barrier=type],
+AC_ARG_ENABLE([barrier], AS_HELP_STRING([--enable-barrier=type],
     [use a barrier of the specified type, one of auto, pthread_barrier, \
     spin_barrier @<:@default=auto@:>@]),
-    [barrier_type=$with_barrier], [barrier_type=auto])
+    [barrier_type=$enable_barrier], [barrier_type=auto])
 
-AC_ARG_WITH([thread_model], AS_HELP_STRING([--with-thread-model@<:@=model@:>@],
+AC_ARG_ENABLE([thread_model], AS_HELP_STRING([--enable-thread-model@<:@=model@:>@],
     [enable threading with the specified model, one of none, auto, \
     openmp, pthreads @<:@default=auto@:>@]),
-    [thread_model=$with_thread_model], [thread_model=auto])
+    [thread_model=$enable_thread_model], [thread_model=auto])
 if test x"$thread_model" = xno; then
     thread_model=none
 fi
