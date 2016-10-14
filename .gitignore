@@ -8,3 +8,4 @@ config.status
 libtool
 .deps
 src/tci.h
+.git.bak
