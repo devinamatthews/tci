@@ -11,4 +11,4 @@ m4/ltsugar.m4 linguist-vendored
 m4/ltversion.m4 linguist-vendored
 m4/lt~obsolete.m4 linguist-vendored
 Makefile.in linguist-vendored
-src/tci.h.in linguist-vendored=false
+src/tci.h.in linguist-language=C
