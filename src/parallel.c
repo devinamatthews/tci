@@ -20,7 +20,7 @@ int tci_parallelize_int(tci_thread_func_t func, void* payload, int nthread, int 
     #pragma omp parallel num_threads(nthread)
     {
         tci_comm_t comm;
-        tci_comm_init(&comm, context, omp_get_thread_num(), 1, 0);
+        tci_comm_init(&comm, context, nthread, omp_get_thread_num(), 1, 0);
         func(&comm, payload);
         #pragma omp barrier
         tci_comm_destroy(&comm);
@@ -97,21 +97,8 @@ int tci_parallelize_int(tci_thread_func_t func, void* payload, int nthread, int 
 
 #endif
 
-int tci_get_env(const char* env, int fallback)
-{
-    const char* str = getenv(env);
-    //TODO: error handling for strtol
-    if (str) return strtol(str, NULL, 10);
-    return fallback;
-}
-
 int tci_parallelize(tci_thread_func_t func, void* payload, int nthread, int arity)
 {
-    if (nthread == 0)
-    {
-        nthread = tci_get_env("OMP_NUM_THREADS", 1);
-    }
-
     if (nthread > 1)
     {
         return tci_parallelize_int(func, payload, nthread, arity);
@@ -135,12 +122,52 @@ void tci_prime_factorization(int n, tci_prime_factors_t* factors)
 
 int tci_next_prime_factor(tci_prime_factors_t* factors)
 {
-    for (;factors->f <= factors->sqrt_n;factors->f++)
+    for (;factors->f <= factors->sqrt_n;)
     {
-        if (factors->n%factors->f == 0)
+        if (factors->f == 2)
         {
-            factors->n /= factors->f;
-            return factors->f;
+            if (factors->n%2 == 0)
+            {
+                factors->n /= 2;
+                return 2;
+            }
+            factors->f = 3;
+        }
+        else if (factors->f == 3)
+        {
+            if (factors->n%3 == 0)
+            {
+                factors->n /= 3;
+                return 3;
+            }
+            factors->f = 5;
+        }
+        else if (factors->f == 5)
+        {
+            if (factors->n%5 == 0)
+            {
+                factors->n /= 5;
+                return 5;
+            }
+            factors->f = 7;
+        }
+        else if (factors->f == 7)
+        {
+            if (factors->n%7 == 0)
+            {
+                factors->n /= 7;
+                return 7;
+            }
+            factors->f = 11;
+        }
+        else
+        {
+            if (factors->n%factors->f == 0)
+            {
+                factors->n /= factors->f;
+                return factors->f;
+            }
+            factors->f++;
         }
     }
 
