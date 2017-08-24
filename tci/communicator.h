@@ -145,6 +145,23 @@ using index_sequence_for = make_index_sequence<sizeof...(T)>;
 
 class communicator
 {
+    protected:
+        template <typename Func, typename... Args>
+        struct broadcast_from_internal
+        {
+            template <size_t... I>
+            broadcast_from_internal(const communicator& comm, unsigned root,
+                                    Func&& func, detail::index_sequence<I...>,
+                                    Args&&... args)
+            {
+                std::tuple<Args&&...> refs(std::forward<Args>(args)...);
+                auto ptr = &refs;
+                tci_comm_bcast_nowait(comm, reinterpret_cast<void**>(&ptr), root);
+                func(std::get<I>(*ptr)...);
+                comm.barrier();
+            }
+        };
+
     public:
         communicator()
         {
@@ -204,41 +221,26 @@ class communicator
         }
 
         template <typename Func, typename... Args>
-        void broadcast_from_nowait(int root, Func&& func, Args&&... args) const
+        void broadcast_from(unsigned root, Func&& func, Args&&... args) const
         {
-            broadcast_from_nowait_internal<Func, Args...>
-                (root, std::forward<Func>(func), std::forward<Args>(args)...,
-                 detail::index_sequence_for<Args...>{});
-        }
-
-        template <typename Func, typename... Args>
-        void broadcast_from(int root, Func&& func, Args&&... args) const
-        {
-            broadcast_from_nowait(root, std::forward<Func>(func),
-                                  std::forward<Args>(args)...);
-            barrier();
-        }
-
-        template <typename Func, typename... Args>
-        void broadcast_nowait(Func&& func, Args&&... args) const
-        {
-            broadcast_from_nowait(0, std::forward<Func>(func),
-                                  std::forward<Args>(args)...);
+            broadcast_from_internal<Func, Args...>
+                (*this, root, std::forward<Func>(func),
+                 detail::index_sequence_for<Args...>{},
+                 std::forward<Args>(args)...);
         }
 
         template <typename Func, typename... Args>
         void broadcast(Func&& func, Args&&... args) const
         {
-            broadcast_from_nowait(0, std::forward<Func>(func),
-                                  std::forward<Args>(args)...);
-            barrier();
+            broadcast_from(0, std::forward<Func>(func),
+                           std::forward<Args>(args)...);
         }
 
         template <typename Arg>
-        void broadcast_value_from_nowait(int root, Arg& arg) const
+        void broadcast_value_from(unsigned root, Arg& arg) const
         {
-            bool tid = thread_num();
-            broadcast_from_nowait(root,
+            unsigned tid = thread_num();
+            broadcast_from(root,
             [&](Arg& master)
             {
                 if (tid != root) arg = master;
@@ -247,23 +249,9 @@ class communicator
         }
 
         template <typename Arg>
-        void broadcast_value_from(int root, Arg& arg) const
-        {
-            broadcast_value_from_nowait(root, arg);
-            barrier();
-        }
-
-        template <typename Arg>
-        void broadcast_value_nowait(Arg& arg) const
-        {
-            broadcast_value_from_nowait(0, arg);
-        }
-
-        template <typename Arg>
         void broadcast_value(Arg& arg) const
         {
-            broadcast_value_from_nowait(0, arg);
-            barrier();
+            broadcast_value_from(0, arg);
         }
 
         communicator gang(int type, unsigned n, unsigned bs=0) const
@@ -349,16 +337,6 @@ class communicator
 
     protected:
         tci_comm _comm;
-
-        template <typename Func, typename... Args, size_t... I>
-        void broadcast_from_nowait_internal(int root, Func&& func, Args&&... args,
-                                            detail::index_sequence<I...>) const
-        {
-            std::tuple<Args&&...> refs(std::forward<Args>(args)...);
-            auto ptr = &refs;
-            tci_comm_bcast_nowait(*this, reinterpret_cast<void**>(&ptr), root);
-            func(std::get<I>(*ptr)...);
-        }
 };
 
 }
