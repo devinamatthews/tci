@@ -73,4 +73,21 @@
 #include <omp.h>
 #endif
 
+#if TCI_USE_TBB_THREADS && defined(__cplusplus)
+#include <tbb/tbb.h>
+#endif
+
+#if TCI_USE_DISPATCH_THREADS
+#include <dispatch/dispatch.h>
+#endif
+
+#if TCI_USE_PPL_THREADS && defined(__cplusplus)
+#include <ppl.h>
+#endif
+
+#if TCI_USE_WINDOWS_THREADS
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 #endif

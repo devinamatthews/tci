@@ -5,8 +5,9 @@ lib_libtci_la_SOURCES = tci/barrier.c \
 						tci/mutex.c \
 						tci/parallel.c \
 						tci/slot.c \
+						tci/task_set.cxx \
 						tci/work_item.c
-						
+
 nobase_include_HEADERS = tci.h \
 						 tci/tci_config.h \
                          tci/barrier.h \

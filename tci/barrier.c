@@ -1,4 +1,4 @@
-#include "barrier.h"
+#include "../barrier.h"
 
 #include <stdlib.h>
 #include <stdio.h>
