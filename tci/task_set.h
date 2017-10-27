@@ -31,4 +31,8 @@ int tci_task_set_visit(tci_task_set* set, tci_task_func func, unsigned task,
 int tci_task_set_visit_all(tci_task_set* set, tci_task_func func,
                            void* payload);
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif

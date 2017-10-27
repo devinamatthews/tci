@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-#if TCI_USE_OPENMP_THREADS || TCI_USE_PTHREAD_THREADS || TCI_USE_WINDOWS_THREADS
+#if TCI_USE_OPENMP_THREADS || TCI_USE_PTHREADS_THREADS || TCI_USE_WINDOWS_THREADS
 
 void tci_task_set_init(tci_task_set* set, tci_comm* comm, unsigned ntask,
                        uint64_t work)
@@ -30,8 +30,8 @@ void tci_task_set_init(tci_task_set* set, tci_comm* comm, unsigned ntask,
 
 void tci_task_set_destroy(tci_task_set* set)
 {
-    tci_comm_barrier(&set->subcomm);
     tci_comm_destroy(&set->subcomm);
+    tci_comm_barrier(set->comm);
     if (tci_comm_is_master(set->comm))
         free((void*)set->slots);
 }

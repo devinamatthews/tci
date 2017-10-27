@@ -83,6 +83,11 @@ void tci_comm_distribute_over_threads_2d(tci_comm* comm, tci_range range_m,
 #include <tuple>
 #include <utility>
 
+namespace tci
+{
+    class communicator;
+}
+
 #include "task_set.h"
 
 namespace tci
@@ -91,7 +96,7 @@ namespace tci
 namespace detail
 {
 
-#if __cplusplus >= 201402l && 0
+#if __cplusplus >= 201402l
 
 using std::index_sequence;
 using std::index_sequence_for;
@@ -197,6 +202,8 @@ class communicator
     public:
         class deferred_task_set
         {
+            friend class communicator;
+
             public:
                 ~deferred_task_set()
                 {
@@ -338,8 +345,7 @@ class communicator
             tci_comm_distribute_over_gangs(*this, n,
             [](tci_comm* comm, uint64_t first, uint64_t last, void* payload)
             {
-                ((Func*)payload)(*reinterpret_cast<const communicator*>(comm),
-                                 first, last);
+                (*(Func*)payload)(first, last);
             }, &func);
         }
 
@@ -349,7 +355,7 @@ class communicator
             tci_comm_distribute_over_threads(*this, n,
             [](tci_comm*, uint64_t first, uint64_t last, void* payload)
             {
-                ((Func*)payload)(first, last);
+                (*(Func*)payload)(first, last);
             }, &func);
         }
 
@@ -361,8 +367,7 @@ class communicator
             [](tci_comm* comm, uint64_t mfirst, uint64_t mlast,
                uint64_t nfirst, uint64_t nlast, void* payload)
             {
-                ((Func*)payload)(*reinterpret_cast<const communicator*>(comm),
-                                 mfirst, mlast, nfirst, nlast);
+                (*(Func*)payload)(mfirst, mlast, nfirst, nlast);
             }, &func);
         }
 
@@ -374,32 +379,32 @@ class communicator
             [](tci_comm*, uint64_t mfirst, uint64_t mlast,
                uint64_t nfirst, uint64_t nlast, void* payload)
             {
-                ((Func*)payload)(mfirst, mlast, nfirst, nlast);
+                (*(Func*)payload)(mfirst, mlast, nfirst, nlast);
             }, &func);
         }
 
         template <typename Func>
-        void do_tasks_deferred(unsigned ntask, int64_t work, Func&& func)
+        void do_tasks_deferred(unsigned ntask, int64_t work, Func&& func) const
         {
             deferred_task_set tasks(*this, ntask, work);
             func(tasks);
         }
 
         template <typename Func>
-        void do_tasks_deferred(unsigned ntask, Func&& func)
+        void do_tasks_deferred(unsigned ntask, Func&& func) const
         {
             do_tasks_deferred(ntask, -1, func);
         }
 
         template <typename Func>
-        void do_tasks(unsigned ntask, int64_t work, Func&& func)
+        void do_tasks(unsigned ntask, int64_t work, Func&& func) const
         {
             deferred_task_set tasks(*this, ntask, work);
             tasks.visit_all(func);
         }
 
         template <typename Func>
-        void do_tasks(unsigned ntask, Func&& func)
+        void do_tasks(unsigned ntask, Func&& func) const
         {
             do_tasks(ntask, -1, func);
         }

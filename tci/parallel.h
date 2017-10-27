@@ -47,7 +47,7 @@ template <typename Body>
 void parallelize(Body&& body, unsigned nthread, unsigned arity=0)
 {
     tci_parallelize(
-        [](const tci_comm* comm, void* data)
+        [](tci_comm* comm, void* data)
         {
             Body body = *static_cast<Body*>(data);
             body(*reinterpret_cast<const communicator*>(comm));

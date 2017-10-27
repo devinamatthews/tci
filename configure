@@ -198,7 +198,6 @@ test -x / || exit 1"
   as_lineno_2=";as_suggested=$as_suggested$LINENO;as_suggested=$as_suggested" as_lineno_2a=\$LINENO
   eval 'test \"x\$as_lineno_1'\$as_run'\" != \"x\$as_lineno_2'\$as_run'\" &&
   test \"x\`expr \$as_lineno_1'\$as_run' + 1\`\" = \"x\$as_lineno_2'\$as_run'\"' || exit 1
-test \$(( 1 + 1 )) = 2 || exit 1
 
   test -n \"\${ZSH_VERSION+set}\${BASH_VERSION+set}\" || (
     ECHO='\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\'
@@ -206,7 +205,8 @@ test \$(( 1 + 1 )) = 2 || exit 1
     ECHO=\$ECHO\$ECHO\$ECHO\$ECHO\$ECHO\$ECHO
     PATH=/empty FPATH=/empty; export PATH FPATH
     test \"X\`printf %s \$ECHO\`\" = \"X\$ECHO\" \\
-      || test \"X\`print -r -- \$ECHO\`\" = \"X\$ECHO\" ) || exit 1"
+      || test \"X\`print -r -- \$ECHO\`\" = \"X\$ECHO\" ) || exit 1
+test \$(( 1 + 1 )) = 2 || exit 1"
   if (eval "$as_required") 2>/dev/null; then :
   as_have_required=yes
 else
@@ -635,6 +635,30 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
+HAVE_CXX11
+CPLUSPLUS_FALSE
+CPLUSPLUS_TRUE
+USE_DISPATCH_THREADS
+USE_WINDOWS_THREADS
+USE_PPL_THREADS
+USE_TBB_THREADS
+USE_PTHREADS_THREADS
+USE_OMPTASK_THREADS
+USE_OPENMP_THREADS
+USE_SPIN_BARRIER
+USE_PTHREAD_BARRIER
+USE_ATOMIC_SPINLOCK
+USE_OMP_LOCK
+USE_OSX_SPINLOCK
+USE_PTHREAD_SPINLOCK
+USE_PTHREAD_MUTEX
+OPENMP_CFLAGS
+PTHREAD_CFLAGS
+PTHREAD_LIBS
+PTHREAD_CC
+ax_pthread_config
+CXXCPP
+CPP
 LT_SYS_LIBRARY_PATH
 OTOOL64
 OTOOL
@@ -653,6 +677,8 @@ ac_ct_DUMPBIN
 DUMPBIN
 LD
 FGREP
+EGREP
+GREP
 SED
 host_os
 host_vendor
@@ -663,24 +689,6 @@ build_vendor
 build_cpu
 build
 LIBTOOL
-HAVE_CXX11
-USE_TBB_FALSE
-USE_TBB_TRUE
-USE_TBB_THREADS
-USE_PTHREADS_THREADS
-USE_OPENMP_THREADS
-USE_SPIN_BARRIER
-USE_PTHREAD_BARRIER
-USE_ATOMIC_SPINLOCK
-USE_OMP_LOCK
-USE_OSX_SPINLOCK
-USE_PTHREAD_SPINLOCK
-USE_PTHREAD_MUTEX
-CXXCPP
-OPENMP_CFLAGS
-EGREP
-GREP
-CPP
 am__fastdepCXX_FALSE
 am__fastdepCXX_TRUE
 CXXDEPMODE
@@ -778,11 +786,6 @@ enable_option_checking
 enable_silent_rules
 enable_maintainer_mode
 enable_dependency_tracking
-enable_mutex
-enable_barrier
-enable_thread_model
-enable_threading
-enable_openmp
 enable_shared
 enable_static
 with_pic
@@ -791,6 +794,11 @@ with_aix_soname
 with_gnu_ld
 with_sysroot
 enable_libtool_lock
+enable_mutex
+enable_barrier
+enable_thread_model
+enable_threading
+enable_openmp
 '
       ac_precious_vars='build_alias
 host_alias
@@ -803,9 +811,9 @@ CPPFLAGS
 CXX
 CXXFLAGS
 CCC
+LT_SYS_LIBRARY_PATH
 CPP
-CXXCPP
-LT_SYS_LIBRARY_PATH'
+CXXCPP'
 
 
 # Initialize some variables set by options.
@@ -1433,6 +1441,11 @@ Optional Features:
                           do not reject slow dependency extractors
   --disable-dependency-tracking
                           speeds up one-time build
+  --enable-shared[=PKGS]  build shared libraries [default=yes]
+  --enable-static[=PKGS]  build static libraries [default=yes]
+  --enable-fast-install[=PKGS]
+                          optimize for fast installation [default=yes]
+  --disable-libtool-lock  avoid locking (might break parallel builds)
   --enable-mutex=type     use a mutex of the specified type, one of auto,
                           pthread_mutex, pthread_spinlock, osx_spinlock,
                           omp_lock, atomic_spinlock [default=auto]
@@ -1440,14 +1453,11 @@ Optional Features:
                           pthread_barrier, spin_barrier [default=auto]
   --enable-thread-model[=model]
                           enable threading with the specified model, one of
-                          none, auto, openmp, pthreads, or tbb [default=auto]
-
+                          none, auto, task, openmp, pthreads, tbb, omptask,
+                          winthreads, ppl, or dispatch [default=auto]
+  --enable-threading=[=model]
+                          alias for --enable-thread-model
   --disable-openmp        do not use OpenMP
-  --enable-shared[=PKGS]  build shared libraries [default=yes]
-  --enable-static[=PKGS]  build static libraries [default=yes]
-  --enable-fast-install[=PKGS]
-                          optimize for fast installation [default=yes]
-  --disable-libtool-lock  avoid locking (might break parallel builds)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1471,10 +1481,10 @@ Some influential environment variables:
               you have headers in a nonstandard directory <include dir>
   CXX         C++ compiler command
   CXXFLAGS    C++ compiler flags
-  CPP         C preprocessor
-  CXXCPP      C++ preprocessor
   LT_SYS_LIBRARY_PATH
               User-defined run-time library search path.
+  CPP         C preprocessor
+  CXXCPP      C++ preprocessor
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -1633,207 +1643,6 @@ fi
 
 } # ac_fn_cxx_try_compile
 
-# ac_fn_c_try_cpp LINENO
-# ----------------------
-# Try to preprocess conftest.$ac_ext, and return whether this succeeded.
-ac_fn_c_try_cpp ()
-{
-  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
-  if { { ac_try="$ac_cpp conftest.$ac_ext"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
-$as_echo "$ac_try_echo"; } >&5
-  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.err
-  ac_status=$?
-  if test -s conftest.err; then
-    grep -v '^ *+' conftest.err >conftest.er1
-    cat conftest.er1 >&5
-    mv -f conftest.er1 conftest.err
-  fi
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } > conftest.i && {
-	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
-	 test ! -s conftest.err
-       }; then :
-  ac_retval=0
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-    ac_retval=1
-fi
-  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
-  as_fn_set_status $ac_retval
-
-} # ac_fn_c_try_cpp
-
-# ac_fn_c_check_header_mongrel LINENO HEADER VAR INCLUDES
-# -------------------------------------------------------
-# Tests whether HEADER exists, giving a warning if it cannot be compiled using
-# the include files in INCLUDES and setting the cache variable VAR
-# accordingly.
-ac_fn_c_check_header_mongrel ()
-{
-  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
-  if eval \${$3+:} false; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
-$as_echo_n "checking for $2... " >&6; }
-if eval \${$3+:} false; then :
-  $as_echo_n "(cached) " >&6
-fi
-eval ac_res=\$$3
-	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
-$as_echo "$ac_res" >&6; }
-else
-  # Is the header compilable?
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking $2 usability" >&5
-$as_echo_n "checking $2 usability... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$4
-#include <$2>
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_header_compiler=yes
-else
-  ac_header_compiler=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_header_compiler" >&5
-$as_echo "$ac_header_compiler" >&6; }
-
-# Is the header present?
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking $2 presence" >&5
-$as_echo_n "checking $2 presence... " >&6; }
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <$2>
-_ACEOF
-if ac_fn_c_try_cpp "$LINENO"; then :
-  ac_header_preproc=yes
-else
-  ac_header_preproc=no
-fi
-rm -f conftest.err conftest.i conftest.$ac_ext
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_header_preproc" >&5
-$as_echo "$ac_header_preproc" >&6; }
-
-# So?  What about this header?
-case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in #((
-  yes:no: )
-    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2: accepted by the compiler, rejected by the preprocessor!" >&5
-$as_echo "$as_me: WARNING: $2: accepted by the compiler, rejected by the preprocessor!" >&2;}
-    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2: proceeding with the compiler's result" >&5
-$as_echo "$as_me: WARNING: $2: proceeding with the compiler's result" >&2;}
-    ;;
-  no:yes:* )
-    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2: present but cannot be compiled" >&5
-$as_echo "$as_me: WARNING: $2: present but cannot be compiled" >&2;}
-    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2:     check for missing prerequisite headers?" >&5
-$as_echo "$as_me: WARNING: $2:     check for missing prerequisite headers?" >&2;}
-    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2: see the Autoconf documentation" >&5
-$as_echo "$as_me: WARNING: $2: see the Autoconf documentation" >&2;}
-    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2:     section \"Present But Cannot Be Compiled\"" >&5
-$as_echo "$as_me: WARNING: $2:     section \"Present But Cannot Be Compiled\"" >&2;}
-    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2: proceeding with the compiler's result" >&5
-$as_echo "$as_me: WARNING: $2: proceeding with the compiler's result" >&2;}
-( $as_echo "## ----------------------------------- ##
-## Report this to dmatthews@utexas.edu ##
-## ----------------------------------- ##"
-     ) | sed "s/^/$as_me: WARNING:     /" >&2
-    ;;
-esac
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
-$as_echo_n "checking for $2... " >&6; }
-if eval \${$3+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  eval "$3=\$ac_header_compiler"
-fi
-eval ac_res=\$$3
-	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
-$as_echo "$ac_res" >&6; }
-fi
-  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
-
-} # ac_fn_c_check_header_mongrel
-
-# ac_fn_c_try_run LINENO
-# ----------------------
-# Try to link conftest.$ac_ext, and return whether this succeeded. Assumes
-# that executables *can* be run.
-ac_fn_c_try_run ()
-{
-  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
-  if { { ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
-$as_echo "$ac_try_echo"; } >&5
-  (eval "$ac_link") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } && { ac_try='./conftest$ac_exeext'
-  { { case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
-$as_echo "$ac_try_echo"; } >&5
-  (eval "$ac_try") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }; }; then :
-  ac_retval=0
-else
-  $as_echo "$as_me: program exited with status $ac_status" >&5
-       $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-       ac_retval=$ac_status
-fi
-  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
-  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
-  as_fn_set_status $ac_retval
-
-} # ac_fn_c_try_run
-
-# ac_fn_c_check_header_compile LINENO HEADER VAR INCLUDES
-# -------------------------------------------------------
-# Tests whether HEADER exists and can be compiled using the include files in
-# INCLUDES, setting the cache variable VAR accordingly.
-ac_fn_c_check_header_compile ()
-{
-  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
-$as_echo_n "checking for $2... " >&6; }
-if eval \${$3+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-$4
-#include <$2>
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  eval "$3=yes"
-else
-  eval "$3=no"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-eval ac_res=\$$3
-	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
-$as_echo "$ac_res" >&6; }
-  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
-
-} # ac_fn_c_check_header_compile
-
 # ac_fn_c_try_link LINENO
 # -----------------------
 # Try to link conftest.$ac_ext, and return whether this succeeded.
@@ -1879,6 +1688,116 @@ fi
   as_fn_set_status $ac_retval
 
 } # ac_fn_c_try_link
+
+# ac_fn_c_check_header_compile LINENO HEADER VAR INCLUDES
+# -------------------------------------------------------
+# Tests whether HEADER exists and can be compiled using the include files in
+# INCLUDES, setting the cache variable VAR accordingly.
+ac_fn_c_check_header_compile ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
+$as_echo_n "checking for $2... " >&6; }
+if eval \${$3+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$4
+#include <$2>
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  eval "$3=yes"
+else
+  eval "$3=no"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+eval ac_res=\$$3
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+
+} # ac_fn_c_check_header_compile
+
+# ac_fn_c_try_cpp LINENO
+# ----------------------
+# Try to preprocess conftest.$ac_ext, and return whether this succeeded.
+ac_fn_c_try_cpp ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  if { { ac_try="$ac_cpp conftest.$ac_ext"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_cpp conftest.$ac_ext") 2>conftest.err
+  ac_status=$?
+  if test -s conftest.err; then
+    grep -v '^ *+' conftest.err >conftest.er1
+    cat conftest.er1 >&5
+    mv -f conftest.er1 conftest.err
+  fi
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } > conftest.i && {
+	 test -z "$ac_c_preproc_warn_flag$ac_c_werror_flag" ||
+	 test ! -s conftest.err
+       }; then :
+  ac_retval=0
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+    ac_retval=1
+fi
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+  as_fn_set_status $ac_retval
+
+} # ac_fn_c_try_cpp
+
+# ac_fn_c_try_run LINENO
+# ----------------------
+# Try to link conftest.$ac_ext, and return whether this succeeded. Assumes
+# that executables *can* be run.
+ac_fn_c_try_run ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  if { { ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_link") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } && { ac_try='./conftest$ac_exeext'
+  { { case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_try") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; }; then :
+  ac_retval=0
+else
+  $as_echo "$as_me: program exited with status $ac_status" >&5
+       $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+       ac_retval=$ac_status
+fi
+  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+  as_fn_set_status $ac_retval
+
+} # ac_fn_c_try_run
 
 # ac_fn_c_check_func LINENO FUNC VAR
 # ----------------------------------
@@ -1984,6 +1903,52 @@ fi
 
 } # ac_fn_cxx_try_cpp
 
+# ac_fn_cxx_try_link LINENO
+# -------------------------
+# Try to link conftest.$ac_ext, and return whether this succeeded.
+ac_fn_cxx_try_link ()
+{
+  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
+  rm -f conftest.$ac_objext conftest$ac_exeext
+  if { { ac_try="$ac_link"
+case "(($ac_try" in
+  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+  *) ac_try_echo=$ac_try;;
+esac
+eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
+$as_echo "$ac_try_echo"; } >&5
+  (eval "$ac_link") 2>conftest.err
+  ac_status=$?
+  if test -s conftest.err; then
+    grep -v '^ *+' conftest.err >conftest.er1
+    cat conftest.er1 >&5
+    mv -f conftest.er1 conftest.err
+  fi
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } && {
+	 test -z "$ac_cxx_werror_flag" ||
+	 test ! -s conftest.err
+       } && test -s conftest$ac_exeext && {
+	 test "$cross_compiling" = yes ||
+	 test -x conftest$ac_exeext
+       }; then :
+  ac_retval=0
+else
+  $as_echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+	ac_retval=1
+fi
+  # Delete the IPA/IPO (Inter Procedural Analysis/Optimization) information
+  # created by the PGI compiler (conftest_ipa8_conftest.oo), as it would
+  # interfere with the next link command; also delete a directory that is
+  # left behind by Apple's compiler.  We do this before executing the actions.
+  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+  as_fn_set_status $ac_retval
+
+} # ac_fn_cxx_try_link
+
 # ac_fn_cxx_check_header_mongrel LINENO HEADER VAR INCLUDES
 # ---------------------------------------------------------
 # Tests whether HEADER exists, giving a warning if it cannot be compiled using
@@ -2075,51 +2040,96 @@ fi
 
 } # ac_fn_cxx_check_header_mongrel
 
-# ac_fn_cxx_try_link LINENO
-# -------------------------
-# Try to link conftest.$ac_ext, and return whether this succeeded.
-ac_fn_cxx_try_link ()
+# ac_fn_c_check_header_mongrel LINENO HEADER VAR INCLUDES
+# -------------------------------------------------------
+# Tests whether HEADER exists, giving a warning if it cannot be compiled using
+# the include files in INCLUDES and setting the cache variable VAR
+# accordingly.
+ac_fn_c_check_header_mongrel ()
 {
   as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
-  rm -f conftest.$ac_objext conftest$ac_exeext
-  if { { ac_try="$ac_link"
-case "(($ac_try" in
-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
-  *) ac_try_echo=$ac_try;;
-esac
-eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
-$as_echo "$ac_try_echo"; } >&5
-  (eval "$ac_link") 2>conftest.err
-  ac_status=$?
-  if test -s conftest.err; then
-    grep -v '^ *+' conftest.err >conftest.er1
-    cat conftest.er1 >&5
-    mv -f conftest.er1 conftest.err
-  fi
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } && {
-	 test -z "$ac_cxx_werror_flag" ||
-	 test ! -s conftest.err
-       } && test -s conftest$ac_exeext && {
-	 test "$cross_compiling" = yes ||
-	 test -x conftest$ac_exeext
-       }; then :
-  ac_retval=0
-else
-  $as_echo "$as_me: failed program was:" >&5
-sed 's/^/| /' conftest.$ac_ext >&5
-
-	ac_retval=1
+  if eval \${$3+:} false; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
+$as_echo_n "checking for $2... " >&6; }
+if eval \${$3+:} false; then :
+  $as_echo_n "(cached) " >&6
 fi
-  # Delete the IPA/IPO (Inter Procedural Analysis/Optimization) information
-  # created by the PGI compiler (conftest_ipa8_conftest.oo), as it would
-  # interfere with the next link command; also delete a directory that is
-  # left behind by Apple's compiler.  We do this before executing the actions.
-  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
-  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
-  as_fn_set_status $ac_retval
+eval ac_res=\$$3
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+else
+  # Is the header compilable?
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking $2 usability" >&5
+$as_echo_n "checking $2 usability... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+$4
+#include <$2>
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_header_compiler=yes
+else
+  ac_header_compiler=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_header_compiler" >&5
+$as_echo "$ac_header_compiler" >&6; }
 
-} # ac_fn_cxx_try_link
+# Is the header present?
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking $2 presence" >&5
+$as_echo_n "checking $2 presence... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <$2>
+_ACEOF
+if ac_fn_c_try_cpp "$LINENO"; then :
+  ac_header_preproc=yes
+else
+  ac_header_preproc=no
+fi
+rm -f conftest.err conftest.i conftest.$ac_ext
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_header_preproc" >&5
+$as_echo "$ac_header_preproc" >&6; }
+
+# So?  What about this header?
+case $ac_header_compiler:$ac_header_preproc:$ac_c_preproc_warn_flag in #((
+  yes:no: )
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2: accepted by the compiler, rejected by the preprocessor!" >&5
+$as_echo "$as_me: WARNING: $2: accepted by the compiler, rejected by the preprocessor!" >&2;}
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2: proceeding with the compiler's result" >&5
+$as_echo "$as_me: WARNING: $2: proceeding with the compiler's result" >&2;}
+    ;;
+  no:yes:* )
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2: present but cannot be compiled" >&5
+$as_echo "$as_me: WARNING: $2: present but cannot be compiled" >&2;}
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2:     check for missing prerequisite headers?" >&5
+$as_echo "$as_me: WARNING: $2:     check for missing prerequisite headers?" >&2;}
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2: see the Autoconf documentation" >&5
+$as_echo "$as_me: WARNING: $2: see the Autoconf documentation" >&2;}
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2:     section \"Present But Cannot Be Compiled\"" >&5
+$as_echo "$as_me: WARNING: $2:     section \"Present But Cannot Be Compiled\"" >&2;}
+    { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $2: proceeding with the compiler's result" >&5
+$as_echo "$as_me: WARNING: $2: proceeding with the compiler's result" >&2;}
+( $as_echo "## ----------------------------------- ##
+## Report this to dmatthews@utexas.edu ##
+## ----------------------------------- ##"
+     ) | sed "s/^/$as_me: WARNING:     /" >&2
+    ;;
+esac
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $2" >&5
+$as_echo_n "checking for $2... " >&6; }
+if eval \${$3+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  eval "$3=\$ac_header_compiler"
+fi
+eval ac_res=\$$3
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+fi
+  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
+
+} # ac_fn_c_check_header_mongrel
 cat >config.log <<_ACEOF
 This file contains any messages produced by compilers while
 running configure, to aid debugging if configure makes a mistake.
@@ -4554,2330 +4564,6 @@ else
 fi
 
 
-
-#
-# Get user preferences
-#
-
-# Check whether --enable-mutex was given.
-if test "${enable_mutex+set}" = set; then :
-  enableval=$enable_mutex; mutex_type=$enable_mutex
-else
-  mutex_type=auto
-fi
-
-
-# Check whether --enable-barrier was given.
-if test "${enable_barrier+set}" = set; then :
-  enableval=$enable_barrier; barrier_type=$enable_barrier
-else
-  barrier_type=auto
-fi
-
-
-# Check whether --enable-thread-model was given.
-if test "${enable_thread_model+set}" = set; then :
-  enableval=$enable_thread_model; thread_model=$enable_thread_model
-else
-  thread_model=auto
-fi
-
-
-# Check whether --enable-threading was given.
-if test "${enable_threading+set}" = set; then :
-  enableval=$enable_threading; thread_model=$enable_threading
-fi
-
-
-if test x"$thread_model" = xno; then
-    thread_model=none
-fi
-
-#
-# Check for pthreads
-#
-
-
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking how to run the C preprocessor" >&5
-$as_echo_n "checking how to run the C preprocessor... " >&6; }
-# On Suns, sometimes $CPP names a directory.
-if test -n "$CPP" && test -d "$CPP"; then
-  CPP=
-fi
-if test -z "$CPP"; then
-  if ${ac_cv_prog_CPP+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-      # Double quotes because CPP needs to be expanded
-    for CPP in "$CC -E" "$CC -E -traditional-cpp" "/lib/cpp"
-    do
-      ac_preproc_ok=false
-for ac_c_preproc_warn_flag in '' yes
-do
-  # Use a header file that comes with gcc, so configuring glibc
-  # with a fresh cross-compiler works.
-  # Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-  # <limits.h> exists even on freestanding compilers.
-  # On the NeXT, cc -E runs the code through the compiler's parser,
-  # not just through cpp. "Syntax error" is here to catch this case.
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __STDC__
-# include <limits.h>
-#else
-# include <assert.h>
-#endif
-		     Syntax error
-_ACEOF
-if ac_fn_c_try_cpp "$LINENO"; then :
-
-else
-  # Broken: fails on valid input.
-continue
-fi
-rm -f conftest.err conftest.i conftest.$ac_ext
-
-  # OK, works on sane cases.  Now check whether nonexistent headers
-  # can be detected and how.
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <ac_nonexistent.h>
-_ACEOF
-if ac_fn_c_try_cpp "$LINENO"; then :
-  # Broken: success on invalid input.
-continue
-else
-  # Passes both tests.
-ac_preproc_ok=:
-break
-fi
-rm -f conftest.err conftest.i conftest.$ac_ext
-
-done
-# Because of `break', _AC_PREPROC_IFELSE's cleaning code was skipped.
-rm -f conftest.i conftest.err conftest.$ac_ext
-if $ac_preproc_ok; then :
-  break
-fi
-
-    done
-    ac_cv_prog_CPP=$CPP
-
-fi
-  CPP=$ac_cv_prog_CPP
-else
-  ac_cv_prog_CPP=$CPP
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $CPP" >&5
-$as_echo "$CPP" >&6; }
-ac_preproc_ok=false
-for ac_c_preproc_warn_flag in '' yes
-do
-  # Use a header file that comes with gcc, so configuring glibc
-  # with a fresh cross-compiler works.
-  # Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-  # <limits.h> exists even on freestanding compilers.
-  # On the NeXT, cc -E runs the code through the compiler's parser,
-  # not just through cpp. "Syntax error" is here to catch this case.
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __STDC__
-# include <limits.h>
-#else
-# include <assert.h>
-#endif
-		     Syntax error
-_ACEOF
-if ac_fn_c_try_cpp "$LINENO"; then :
-
-else
-  # Broken: fails on valid input.
-continue
-fi
-rm -f conftest.err conftest.i conftest.$ac_ext
-
-  # OK, works on sane cases.  Now check whether nonexistent headers
-  # can be detected and how.
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <ac_nonexistent.h>
-_ACEOF
-if ac_fn_c_try_cpp "$LINENO"; then :
-  # Broken: success on invalid input.
-continue
-else
-  # Passes both tests.
-ac_preproc_ok=:
-break
-fi
-rm -f conftest.err conftest.i conftest.$ac_ext
-
-done
-# Because of `break', _AC_PREPROC_IFELSE's cleaning code was skipped.
-rm -f conftest.i conftest.err conftest.$ac_ext
-if $ac_preproc_ok; then :
-
-else
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "C preprocessor \"$CPP\" fails sanity check
-See \`config.log' for more details" "$LINENO" 5; }
-fi
-
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for grep that handles long lines and -e" >&5
-$as_echo_n "checking for grep that handles long lines and -e... " >&6; }
-if ${ac_cv_path_GREP+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if test -z "$GREP"; then
-  ac_path_GREP_found=false
-  # Loop through the user's path and test for each of PROGNAME-LIST
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_prog in grep ggrep; do
-    for ac_exec_ext in '' $ac_executable_extensions; do
-      ac_path_GREP="$as_dir/$ac_prog$ac_exec_ext"
-      as_fn_executable_p "$ac_path_GREP" || continue
-# Check for GNU ac_path_GREP and select it if it is found.
-  # Check for GNU $ac_path_GREP
-case `"$ac_path_GREP" --version 2>&1` in
-*GNU*)
-  ac_cv_path_GREP="$ac_path_GREP" ac_path_GREP_found=:;;
-*)
-  ac_count=0
-  $as_echo_n 0123456789 >"conftest.in"
-  while :
-  do
-    cat "conftest.in" "conftest.in" >"conftest.tmp"
-    mv "conftest.tmp" "conftest.in"
-    cp "conftest.in" "conftest.nl"
-    $as_echo 'GREP' >> "conftest.nl"
-    "$ac_path_GREP" -e 'GREP$' -e '-(cannot match)-' < "conftest.nl" >"conftest.out" 2>/dev/null || break
-    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
-    as_fn_arith $ac_count + 1 && ac_count=$as_val
-    if test $ac_count -gt ${ac_path_GREP_max-0}; then
-      # Best one so far, save it but keep looking for a better one
-      ac_cv_path_GREP="$ac_path_GREP"
-      ac_path_GREP_max=$ac_count
-    fi
-    # 10*(2^10) chars as input seems more than enough
-    test $ac_count -gt 10 && break
-  done
-  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
-esac
-
-      $ac_path_GREP_found && break 3
-    done
-  done
-  done
-IFS=$as_save_IFS
-  if test -z "$ac_cv_path_GREP"; then
-    as_fn_error $? "no acceptable grep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
-  fi
-else
-  ac_cv_path_GREP=$GREP
-fi
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_GREP" >&5
-$as_echo "$ac_cv_path_GREP" >&6; }
- GREP="$ac_cv_path_GREP"
-
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for egrep" >&5
-$as_echo_n "checking for egrep... " >&6; }
-if ${ac_cv_path_EGREP+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if echo a | $GREP -E '(a|b)' >/dev/null 2>&1
-   then ac_cv_path_EGREP="$GREP -E"
-   else
-     if test -z "$EGREP"; then
-  ac_path_EGREP_found=false
-  # Loop through the user's path and test for each of PROGNAME-LIST
-  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_prog in egrep; do
-    for ac_exec_ext in '' $ac_executable_extensions; do
-      ac_path_EGREP="$as_dir/$ac_prog$ac_exec_ext"
-      as_fn_executable_p "$ac_path_EGREP" || continue
-# Check for GNU ac_path_EGREP and select it if it is found.
-  # Check for GNU $ac_path_EGREP
-case `"$ac_path_EGREP" --version 2>&1` in
-*GNU*)
-  ac_cv_path_EGREP="$ac_path_EGREP" ac_path_EGREP_found=:;;
-*)
-  ac_count=0
-  $as_echo_n 0123456789 >"conftest.in"
-  while :
-  do
-    cat "conftest.in" "conftest.in" >"conftest.tmp"
-    mv "conftest.tmp" "conftest.in"
-    cp "conftest.in" "conftest.nl"
-    $as_echo 'EGREP' >> "conftest.nl"
-    "$ac_path_EGREP" 'EGREP$' < "conftest.nl" >"conftest.out" 2>/dev/null || break
-    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
-    as_fn_arith $ac_count + 1 && ac_count=$as_val
-    if test $ac_count -gt ${ac_path_EGREP_max-0}; then
-      # Best one so far, save it but keep looking for a better one
-      ac_cv_path_EGREP="$ac_path_EGREP"
-      ac_path_EGREP_max=$ac_count
-    fi
-    # 10*(2^10) chars as input seems more than enough
-    test $ac_count -gt 10 && break
-  done
-  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
-esac
-
-      $ac_path_EGREP_found && break 3
-    done
-  done
-  done
-IFS=$as_save_IFS
-  if test -z "$ac_cv_path_EGREP"; then
-    as_fn_error $? "no acceptable egrep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
-  fi
-else
-  ac_cv_path_EGREP=$EGREP
-fi
-
-   fi
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_EGREP" >&5
-$as_echo "$ac_cv_path_EGREP" >&6; }
- EGREP="$ac_cv_path_EGREP"
-
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ANSI C header files" >&5
-$as_echo_n "checking for ANSI C header files... " >&6; }
-if ${ac_cv_header_stdc+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <float.h>
-
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_cv_header_stdc=yes
-else
-  ac_cv_header_stdc=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-
-if test $ac_cv_header_stdc = yes; then
-  # SunOS 4.x string.h does not declare mem*, contrary to ANSI.
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <string.h>
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "memchr" >/dev/null 2>&1; then :
-
-else
-  ac_cv_header_stdc=no
-fi
-rm -f conftest*
-
-fi
-
-if test $ac_cv_header_stdc = yes; then
-  # ISC 2.0.2 stdlib.h does not declare free, contrary to ANSI.
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <stdlib.h>
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "free" >/dev/null 2>&1; then :
-
-else
-  ac_cv_header_stdc=no
-fi
-rm -f conftest*
-
-fi
-
-if test $ac_cv_header_stdc = yes; then
-  # /bin/cc in Irix-4.0.5 gets non-ANSI ctype macros unless using -ansi.
-  if test "$cross_compiling" = yes; then :
-  :
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <ctype.h>
-#include <stdlib.h>
-#if ((' ' & 0x0FF) == 0x020)
-# define ISLOWER(c) ('a' <= (c) && (c) <= 'z')
-# define TOUPPER(c) (ISLOWER(c) ? 'A' + ((c) - 'a') : (c))
-#else
-# define ISLOWER(c) \
-		   (('a' <= (c) && (c) <= 'i') \
-		     || ('j' <= (c) && (c) <= 'r') \
-		     || ('s' <= (c) && (c) <= 'z'))
-# define TOUPPER(c) (ISLOWER(c) ? ((c) | 0x40) : (c))
-#endif
-
-#define XOR(e, f) (((e) && !(f)) || (!(e) && (f)))
-int
-main ()
-{
-  int i;
-  for (i = 0; i < 256; i++)
-    if (XOR (islower (i), ISLOWER (i))
-	|| toupper (i) != TOUPPER (i))
-      return 2;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_run "$LINENO"; then :
-
-else
-  ac_cv_header_stdc=no
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-
-fi
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_header_stdc" >&5
-$as_echo "$ac_cv_header_stdc" >&6; }
-if test $ac_cv_header_stdc = yes; then
-
-$as_echo "#define STDC_HEADERS 1" >>confdefs.h
-
-fi
-
-# On IRIX 5.3, sys/types and inttypes.h are conflicting.
-for ac_header in sys/types.h sys/stat.h stdlib.h string.h memory.h strings.h \
-		  inttypes.h stdint.h unistd.h
-do :
-  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
-ac_fn_c_check_header_compile "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default
-"
-if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
-  cat >>confdefs.h <<_ACEOF
-#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
-_ACEOF
-
-fi
-
-done
-
-
-for ac_header in pthread.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "pthread.h" "ac_cv_header_pthread_h" "$ac_includes_default"
-if test "x$ac_cv_header_pthread_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_PTHREAD_H 1
-_ACEOF
-
-fi
-
-done
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing pthread_create" >&5
-$as_echo_n "checking for library containing pthread_create... " >&6; }
-if ${ac_cv_search_pthread_create+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_func_search_save_LIBS=$LIBS
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char pthread_create ();
-int
-main ()
-{
-return pthread_create ();
-  ;
-  return 0;
-}
-_ACEOF
-for ac_lib in '' pthread; do
-  if test -z "$ac_lib"; then
-    ac_res="none required"
-  else
-    ac_res=-l$ac_lib
-    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
-  fi
-  if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_search_pthread_create=$ac_res
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext
-  if ${ac_cv_search_pthread_create+:} false; then :
-  break
-fi
-done
-if ${ac_cv_search_pthread_create+:} false; then :
-
-else
-  ac_cv_search_pthread_create=no
-fi
-rm conftest.$ac_ext
-LIBS=$ac_func_search_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_pthread_create" >&5
-$as_echo "$ac_cv_search_pthread_create" >&6; }
-ac_res=$ac_cv_search_pthread_create
-if test "$ac_res" != no; then :
-  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
-
-fi
-
-for ac_func in pthread_spin_init pthread_mutex_init pthread_barrier_init
-do :
-  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
-ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
-if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
-  cat >>confdefs.h <<_ACEOF
-#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
-_ACEOF
-
-fi
-done
-
-
-if test x"$ac_cv_header_pthread_h" = xyes -a \
-        x"$ac_cv_search_pthread_create" != xno; then
-    have_pthreads=yes
-else
-    have_pthreads=no
-fi
-
-if test x"$ac_cv_header_pthread_h" = xyes -a \
-        x"$ac_cv_func_pthread_mutex_init" = xyes; then
-    have_pthread_mutex=yes
-else
-    have_pthread_mutex=no
-fi
-
-if test x"$ac_cv_header_pthread_h" = xyes -a \
-        x"$ac_cv_func_pthread_spin_init" = xyes; then
-    have_pthread_spin=yes
-else
-    have_pthread_spin=no
-fi
-
-if test x"$ac_cv_header_pthread_h" = xyes -a \
-        x"$ac_cv_func_pthread_barrier_init" = xyes; then
-    have_pthread_barrier=yes
-else
-    have_pthread_barrier=no
-fi
-
-#
-# Check for OpenMP
-#
-
-
-  OPENMP_CFLAGS=
-  # Check whether --enable-openmp was given.
-if test "${enable_openmp+set}" = set; then :
-  enableval=$enable_openmp;
-fi
-
-  if test "$enable_openmp" != no; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $CC option to support OpenMP" >&5
-$as_echo_n "checking for $CC option to support OpenMP... " >&6; }
-if ${ac_cv_prog_c_openmp+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#ifndef _OPENMP
- choke me
-#endif
-#include <omp.h>
-int main () { return omp_get_num_threads (); }
-
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_prog_c_openmp='none needed'
-else
-  ac_cv_prog_c_openmp='unsupported'
-	  	  	  	  	  	  	                                	  	  	  	  	  	  for ac_option in -fopenmp -xopenmp -openmp -mp -omp -qsmp=omp -homp \
-                           -Popenmp --openmp; do
-	    ac_save_CFLAGS=$CFLAGS
-	    CFLAGS="$CFLAGS $ac_option"
-	    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#ifndef _OPENMP
- choke me
-#endif
-#include <omp.h>
-int main () { return omp_get_num_threads (); }
-
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_prog_c_openmp=$ac_option
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-	    CFLAGS=$ac_save_CFLAGS
-	    if test "$ac_cv_prog_c_openmp" != unsupported; then
-	      break
-	    fi
-	  done
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_c_openmp" >&5
-$as_echo "$ac_cv_prog_c_openmp" >&6; }
-    case $ac_cv_prog_c_openmp in #(
-      "none needed" | unsupported)
-	;; #(
-      *)
-	OPENMP_CFLAGS=$ac_cv_prog_c_openmp ;;
-    esac
-  fi
-
-
-CFLAGS="$CFLAGS $OPENMP_CFLAGS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#include "omp.h"
-#ifndef _OPENMP
-#error
-#endif
-
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  have_openmp="yes"
-else
-  have_openmp="no"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-
-#
-# Check for TBB
-#
-
-ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-
-ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking how to run the C++ preprocessor" >&5
-$as_echo_n "checking how to run the C++ preprocessor... " >&6; }
-if test -z "$CXXCPP"; then
-  if ${ac_cv_prog_CXXCPP+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-      # Double quotes because CXXCPP needs to be expanded
-    for CXXCPP in "$CXX -E" "/lib/cpp"
-    do
-      ac_preproc_ok=false
-for ac_cxx_preproc_warn_flag in '' yes
-do
-  # Use a header file that comes with gcc, so configuring glibc
-  # with a fresh cross-compiler works.
-  # Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-  # <limits.h> exists even on freestanding compilers.
-  # On the NeXT, cc -E runs the code through the compiler's parser,
-  # not just through cpp. "Syntax error" is here to catch this case.
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __STDC__
-# include <limits.h>
-#else
-# include <assert.h>
-#endif
-		     Syntax error
-_ACEOF
-if ac_fn_cxx_try_cpp "$LINENO"; then :
-
-else
-  # Broken: fails on valid input.
-continue
-fi
-rm -f conftest.err conftest.i conftest.$ac_ext
-
-  # OK, works on sane cases.  Now check whether nonexistent headers
-  # can be detected and how.
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <ac_nonexistent.h>
-_ACEOF
-if ac_fn_cxx_try_cpp "$LINENO"; then :
-  # Broken: success on invalid input.
-continue
-else
-  # Passes both tests.
-ac_preproc_ok=:
-break
-fi
-rm -f conftest.err conftest.i conftest.$ac_ext
-
-done
-# Because of `break', _AC_PREPROC_IFELSE's cleaning code was skipped.
-rm -f conftest.i conftest.err conftest.$ac_ext
-if $ac_preproc_ok; then :
-  break
-fi
-
-    done
-    ac_cv_prog_CXXCPP=$CXXCPP
-
-fi
-  CXXCPP=$ac_cv_prog_CXXCPP
-else
-  ac_cv_prog_CXXCPP=$CXXCPP
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $CXXCPP" >&5
-$as_echo "$CXXCPP" >&6; }
-ac_preproc_ok=false
-for ac_cxx_preproc_warn_flag in '' yes
-do
-  # Use a header file that comes with gcc, so configuring glibc
-  # with a fresh cross-compiler works.
-  # Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
-  # <limits.h> exists even on freestanding compilers.
-  # On the NeXT, cc -E runs the code through the compiler's parser,
-  # not just through cpp. "Syntax error" is here to catch this case.
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#ifdef __STDC__
-# include <limits.h>
-#else
-# include <assert.h>
-#endif
-		     Syntax error
-_ACEOF
-if ac_fn_cxx_try_cpp "$LINENO"; then :
-
-else
-  # Broken: fails on valid input.
-continue
-fi
-rm -f conftest.err conftest.i conftest.$ac_ext
-
-  # OK, works on sane cases.  Now check whether nonexistent headers
-  # can be detected and how.
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#include <ac_nonexistent.h>
-_ACEOF
-if ac_fn_cxx_try_cpp "$LINENO"; then :
-  # Broken: success on invalid input.
-continue
-else
-  # Passes both tests.
-ac_preproc_ok=:
-break
-fi
-rm -f conftest.err conftest.i conftest.$ac_ext
-
-done
-# Because of `break', _AC_PREPROC_IFELSE's cleaning code was skipped.
-rm -f conftest.i conftest.err conftest.$ac_ext
-if $ac_preproc_ok; then :
-
-else
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "C++ preprocessor \"$CXXCPP\" fails sanity check
-See \`config.log' for more details" "$LINENO" 5; }
-fi
-
-ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-
-
-for ac_header in tbb/tbb.h
-do :
-  ac_fn_cxx_check_header_mongrel "$LINENO" "tbb/tbb.h" "ac_cv_header_tbb_tbb_h" "$ac_includes_default"
-if test "x$ac_cv_header_tbb_tbb_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_TBB_TBB_H 1
-_ACEOF
-
-fi
-
-done
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing TBB_runtime_interface_version" >&5
-$as_echo_n "checking for library containing TBB_runtime_interface_version... " >&6; }
-if ${ac_cv_search_TBB_runtime_interface_version+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_func_search_save_LIBS=$LIBS
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char TBB_runtime_interface_version ();
-int
-main ()
-{
-return TBB_runtime_interface_version ();
-  ;
-  return 0;
-}
-_ACEOF
-for ac_lib in '' tbb; do
-  if test -z "$ac_lib"; then
-    ac_res="none required"
-  else
-    ac_res=-l$ac_lib
-    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
-  fi
-  if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_search_TBB_runtime_interface_version=$ac_res
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext
-  if ${ac_cv_search_TBB_runtime_interface_version+:} false; then :
-  break
-fi
-done
-if ${ac_cv_search_TBB_runtime_interface_version+:} false; then :
-
-else
-  ac_cv_search_TBB_runtime_interface_version=no
-fi
-rm conftest.$ac_ext
-LIBS=$ac_func_search_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_TBB_runtime_interface_version" >&5
-$as_echo "$ac_cv_search_TBB_runtime_interface_version" >&6; }
-ac_res=$ac_cv_search_TBB_runtime_interface_version
-if test "$ac_res" != no; then :
-  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
-
-fi
-
-
-if test x"$ac_cv_header_tbb_tbb_h" = xyes && \
-   test x"$ac_cv_search_TBB_runtime_interface_version" != xno; then
-    have_tbb=yes
-else
-    have_tbb=no
-fi
-
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-#
-# Check for OSSpinLock
-#
-
-ac_fn_c_check_header_mongrel "$LINENO" "libkern/OSAtomic.h" "ac_cv_header_libkern_OSAtomic_h" "$ac_includes_default"
-if test "x$ac_cv_header_libkern_OSAtomic_h" = xyes; then :
-
-fi
-
-
-for ac_func in OSSpinLockLock
-do :
-  ac_fn_c_check_func "$LINENO" "OSSpinLockLock" "ac_cv_func_OSSpinLockLock"
-if test "x$ac_cv_func_OSSpinLockLock" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_OSSPINLOCKLOCK 1
-_ACEOF
-
-fi
-done
-
-
-if test x"$ac_cv_header_libkern_OSAtomic_h" = xyes -a \
-        x"$ac_cv_func_OSSpinLockLock" = xyes; then
-    have_osx_spinlock=yes
-else
-    have_osx_spinlock=no
-fi
-
-#
-# Check for __atomic builtins
-#
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_load_n" >&5
-$as_echo_n "checking for __atomic_load_n... " >&6; }
-if ${ax_cv_have___atomic_load_n+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_load_n((int*)0, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_load_n=yes
-else
-  ax_cv_have___atomic_load_n=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_load_n" >&5
-$as_echo "$ax_cv_have___atomic_load_n" >&6; }
-
-    if test yes = $ax_cv_have___atomic_load_n; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_LOAD_N 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_load" >&5
-$as_echo_n "checking for __atomic_load... " >&6; }
-if ${ax_cv_have___atomic_load+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_load((int*)0, (int*)0, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_load=yes
-else
-  ax_cv_have___atomic_load=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_load" >&5
-$as_echo "$ax_cv_have___atomic_load" >&6; }
-
-    if test yes = $ax_cv_have___atomic_load; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_LOAD 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_store_n" >&5
-$as_echo_n "checking for __atomic_store_n... " >&6; }
-if ${ax_cv_have___atomic_store_n+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_store_n((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_store_n=yes
-else
-  ax_cv_have___atomic_store_n=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_store_n" >&5
-$as_echo "$ax_cv_have___atomic_store_n" >&6; }
-
-    if test yes = $ax_cv_have___atomic_store_n; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_STORE_N 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_store" >&5
-$as_echo_n "checking for __atomic_store... " >&6; }
-if ${ax_cv_have___atomic_store+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_store((int*)0, (int*)0, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_store=yes
-else
-  ax_cv_have___atomic_store=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_store" >&5
-$as_echo "$ax_cv_have___atomic_store" >&6; }
-
-    if test yes = $ax_cv_have___atomic_store; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_STORE 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_exchange_n" >&5
-$as_echo_n "checking for __atomic_exchange_n... " >&6; }
-if ${ax_cv_have___atomic_exchange_n+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_exchange_n((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_exchange_n=yes
-else
-  ax_cv_have___atomic_exchange_n=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_exchange_n" >&5
-$as_echo "$ax_cv_have___atomic_exchange_n" >&6; }
-
-    if test yes = $ax_cv_have___atomic_exchange_n; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_EXCHANGE_N 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_exchange" >&5
-$as_echo_n "checking for __atomic_exchange... " >&6; }
-if ${ax_cv_have___atomic_exchange+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_exchange((int*)0, (int*)0, (int*)0, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_exchange=yes
-else
-  ax_cv_have___atomic_exchange=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_exchange" >&5
-$as_echo "$ax_cv_have___atomic_exchange" >&6; }
-
-    if test yes = $ax_cv_have___atomic_exchange; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_EXCHANGE 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_compare_exchange_n" >&5
-$as_echo_n "checking for __atomic_compare_exchange_n... " >&6; }
-if ${ax_cv_have___atomic_compare_exchange_n+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_compare_exchange_n((int*)0, (int*)0, 0, 0, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_compare_exchange_n=yes
-else
-  ax_cv_have___atomic_compare_exchange_n=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_compare_exchange_n" >&5
-$as_echo "$ax_cv_have___atomic_compare_exchange_n" >&6; }
-
-    if test yes = $ax_cv_have___atomic_compare_exchange_n; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_COMPARE_EXCHANGE_N 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_compare_exchange" >&5
-$as_echo_n "checking for __atomic_compare_exchange... " >&6; }
-if ${ax_cv_have___atomic_compare_exchange+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_compare_exchange((int*)0, (int*)0, (int*)0, 0, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_compare_exchange=yes
-else
-  ax_cv_have___atomic_compare_exchange=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_compare_exchange" >&5
-$as_echo "$ax_cv_have___atomic_compare_exchange" >&6; }
-
-    if test yes = $ax_cv_have___atomic_compare_exchange; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_COMPARE_EXCHANGE 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_add_fetch" >&5
-$as_echo_n "checking for __atomic_add_fetch... " >&6; }
-if ${ax_cv_have___atomic_add_fetch+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_add_fetch((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_add_fetch=yes
-else
-  ax_cv_have___atomic_add_fetch=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_add_fetch" >&5
-$as_echo "$ax_cv_have___atomic_add_fetch" >&6; }
-
-    if test yes = $ax_cv_have___atomic_add_fetch; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_ADD_FETCH 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_sub_fetch" >&5
-$as_echo_n "checking for __atomic_sub_fetch... " >&6; }
-if ${ax_cv_have___atomic_sub_fetch+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_sub_fetch((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_sub_fetch=yes
-else
-  ax_cv_have___atomic_sub_fetch=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_sub_fetch" >&5
-$as_echo "$ax_cv_have___atomic_sub_fetch" >&6; }
-
-    if test yes = $ax_cv_have___atomic_sub_fetch; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_SUB_FETCH 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_and_fetch" >&5
-$as_echo_n "checking for __atomic_and_fetch... " >&6; }
-if ${ax_cv_have___atomic_and_fetch+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_and_fetch((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_and_fetch=yes
-else
-  ax_cv_have___atomic_and_fetch=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_and_fetch" >&5
-$as_echo "$ax_cv_have___atomic_and_fetch" >&6; }
-
-    if test yes = $ax_cv_have___atomic_and_fetch; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_AND_FETCH 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_xor_fetch" >&5
-$as_echo_n "checking for __atomic_xor_fetch... " >&6; }
-if ${ax_cv_have___atomic_xor_fetch+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_xor_fetch((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_xor_fetch=yes
-else
-  ax_cv_have___atomic_xor_fetch=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_xor_fetch" >&5
-$as_echo "$ax_cv_have___atomic_xor_fetch" >&6; }
-
-    if test yes = $ax_cv_have___atomic_xor_fetch; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_XOR_FETCH 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_or_fetch" >&5
-$as_echo_n "checking for __atomic_or_fetch... " >&6; }
-if ${ax_cv_have___atomic_or_fetch+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_or_fetch((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_or_fetch=yes
-else
-  ax_cv_have___atomic_or_fetch=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_or_fetch" >&5
-$as_echo "$ax_cv_have___atomic_or_fetch" >&6; }
-
-    if test yes = $ax_cv_have___atomic_or_fetch; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_OR_FETCH 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_nand_fetch" >&5
-$as_echo_n "checking for __atomic_nand_fetch... " >&6; }
-if ${ax_cv_have___atomic_nand_fetch+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_nand_fetch((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_nand_fetch=yes
-else
-  ax_cv_have___atomic_nand_fetch=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_nand_fetch" >&5
-$as_echo "$ax_cv_have___atomic_nand_fetch" >&6; }
-
-    if test yes = $ax_cv_have___atomic_nand_fetch; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_NAND_FETCH 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_fetch_add" >&5
-$as_echo_n "checking for __atomic_fetch_add... " >&6; }
-if ${ax_cv_have___atomic_fetch_add+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_fetch_add((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_fetch_add=yes
-else
-  ax_cv_have___atomic_fetch_add=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_fetch_add" >&5
-$as_echo "$ax_cv_have___atomic_fetch_add" >&6; }
-
-    if test yes = $ax_cv_have___atomic_fetch_add; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_FETCH_ADD 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_fetch_sub" >&5
-$as_echo_n "checking for __atomic_fetch_sub... " >&6; }
-if ${ax_cv_have___atomic_fetch_sub+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_fetch_sub((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_fetch_sub=yes
-else
-  ax_cv_have___atomic_fetch_sub=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_fetch_sub" >&5
-$as_echo "$ax_cv_have___atomic_fetch_sub" >&6; }
-
-    if test yes = $ax_cv_have___atomic_fetch_sub; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_FETCH_SUB 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_fetch_and" >&5
-$as_echo_n "checking for __atomic_fetch_and... " >&6; }
-if ${ax_cv_have___atomic_fetch_and+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_fetch_and((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_fetch_and=yes
-else
-  ax_cv_have___atomic_fetch_and=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_fetch_and" >&5
-$as_echo "$ax_cv_have___atomic_fetch_and" >&6; }
-
-    if test yes = $ax_cv_have___atomic_fetch_and; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_FETCH_AND 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_fetch_xor" >&5
-$as_echo_n "checking for __atomic_fetch_xor... " >&6; }
-if ${ax_cv_have___atomic_fetch_xor+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_fetch_xor((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_fetch_xor=yes
-else
-  ax_cv_have___atomic_fetch_xor=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_fetch_xor" >&5
-$as_echo "$ax_cv_have___atomic_fetch_xor" >&6; }
-
-    if test yes = $ax_cv_have___atomic_fetch_xor; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_FETCH_XOR 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_fetch_or" >&5
-$as_echo_n "checking for __atomic_fetch_or... " >&6; }
-if ${ax_cv_have___atomic_fetch_or+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_fetch_or((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_fetch_or=yes
-else
-  ax_cv_have___atomic_fetch_or=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_fetch_or" >&5
-$as_echo "$ax_cv_have___atomic_fetch_or" >&6; }
-
-    if test yes = $ax_cv_have___atomic_fetch_or; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_FETCH_OR 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_fetch_nand" >&5
-$as_echo_n "checking for __atomic_fetch_nand... " >&6; }
-if ${ax_cv_have___atomic_fetch_nand+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_fetch_nand((int*)0, 1, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_fetch_nand=yes
-else
-  ax_cv_have___atomic_fetch_nand=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_fetch_nand" >&5
-$as_echo "$ax_cv_have___atomic_fetch_nand" >&6; }
-
-    if test yes = $ax_cv_have___atomic_fetch_nand; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_FETCH_NAND 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_test_and_set" >&5
-$as_echo_n "checking for __atomic_test_and_set... " >&6; }
-if ${ax_cv_have___atomic_test_and_set+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_test_and_set((char*)0, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_test_and_set=yes
-else
-  ax_cv_have___atomic_test_and_set=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_test_and_set" >&5
-$as_echo "$ax_cv_have___atomic_test_and_set" >&6; }
-
-    if test yes = $ax_cv_have___atomic_test_and_set; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_TEST_AND_SET 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_clear" >&5
-$as_echo_n "checking for __atomic_clear... " >&6; }
-if ${ax_cv_have___atomic_clear+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_clear((_Bool*)0, __ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_clear=yes
-else
-  ax_cv_have___atomic_clear=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_clear" >&5
-$as_echo "$ax_cv_have___atomic_clear" >&6; }
-
-    if test yes = $ax_cv_have___atomic_clear; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_CLEAR 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_thread_fence" >&5
-$as_echo_n "checking for __atomic_thread_fence... " >&6; }
-if ${ax_cv_have___atomic_thread_fence+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_thread_fence(__ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_thread_fence=yes
-else
-  ax_cv_have___atomic_thread_fence=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_thread_fence" >&5
-$as_echo "$ax_cv_have___atomic_thread_fence" >&6; }
-
-    if test yes = $ax_cv_have___atomic_thread_fence; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_THREAD_FENCE 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_signal_fence" >&5
-$as_echo_n "checking for __atomic_signal_fence... " >&6; }
-if ${ax_cv_have___atomic_signal_fence+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_signal_fence(__ATOMIC_SEQ_CST)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_signal_fence=yes
-else
-  ax_cv_have___atomic_signal_fence=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_signal_fence" >&5
-$as_echo "$ax_cv_have___atomic_signal_fence" >&6; }
-
-    if test yes = $ax_cv_have___atomic_signal_fence; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_SIGNAL_FENCE 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_always_lock_free" >&5
-$as_echo_n "checking for __atomic_always_lock_free... " >&6; }
-if ${ax_cv_have___atomic_always_lock_free+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_always_lock_free(4, 0)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_always_lock_free=yes
-else
-  ax_cv_have___atomic_always_lock_free=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_always_lock_free" >&5
-$as_echo "$ax_cv_have___atomic_always_lock_free" >&6; }
-
-    if test yes = $ax_cv_have___atomic_always_lock_free; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_ALWAYS_LOCK_FREE 1
-_ACEOF
-
-fi
-
-
-
-
-
-
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_is_lock_free" >&5
-$as_echo_n "checking for __atomic_is_lock_free... " >&6; }
-if ${ax_cv_have___atomic_is_lock_free+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
-
-            __atomic_is_lock_free(4, 0)
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_have___atomic_is_lock_free=yes
-else
-  ax_cv_have___atomic_is_lock_free=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_is_lock_free" >&5
-$as_echo "$ax_cv_have___atomic_is_lock_free" >&6; }
-
-    if test yes = $ax_cv_have___atomic_is_lock_free; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE___ATOMIC_IS_LOCK_FREE 1
-_ACEOF
-
-fi
-
-
-
-if test x"$ax_cv_have___atomic_load_n" = xno -o \
-        x"$ax_cv_have___atomic_load" = xno -o \
-        x"$ax_cv_have___atomic_store_n" = xno -o \
-        x"$ax_cv_have___atomic_store" = xno -o \
-        x"$ax_cv_have___atomic_exchange_n" = xno -o \
-        x"$ax_cv_have___atomic_exchange" = xno -o \
-        x"$ax_cv_have___atomic_compare_exchange_n" = xno -o \
-        x"$ax_cv_have___atomic_compare_exchange" = xno -o \
-        x"$ax_cv_have___atomic_add_fetch" = xno -o \
-        x"$ax_cv_have___atomic_sub_fetch" = xno -o \
-        x"$ax_cv_have___atomic_and_fetch" = xno -o \
-        x"$ax_cv_have___atomic_xor_fetch" = xno -o \
-        x"$ax_cv_have___atomic_or_fetch" = xno -o \
-        x"$ax_cv_have___atomic_nand_fetch" = xno -o \
-        x"$ax_cv_have___atomic_fetch_add" = xno -o \
-        x"$ax_cv_have___atomic_fetch_sub" = xno -o \
-        x"$ax_cv_have___atomic_fetch_and" = xno -o \
-        x"$ax_cv_have___atomic_fetch_xor" = xno -o \
-        x"$ax_cv_have___atomic_fetch_or" = xno -o \
-        x"$ax_cv_have___atomic_fetch_nand" = xno -o \
-        x"$ax_cv_have___atomic_test_and_set" = xno -o \
-        x"$ax_cv_have___atomic_clear" = xno -o \
-        x"$ax_cv_have___atomic_thread_fence" = xno -o \
-        x"$ax_cv_have___atomic_signal_fence" = xno -o \
-        x"$ax_cv_have___atomic_always_lock_free" = xno -o \
-        x"$ax_cv_have___atomic_is_lock_free" = xno; then
-    as_fn_error $? "__atomic builtins required" "$LINENO" 5
-fi
-
-#
-# Determine mutex type
-#
-
-if test x"$mutex_type" = xauto; then
-    if test x"$have_osx_spinlock" = xyes; then
-        mutex_type=osx_spinlock
-    elif test x"$have_pthread_spinlock" = xyes; then
-        mutex_type=pthread_spinlock
-    else
-        mutex_type=atomic_spinlock
-    fi
-fi
-
-USE_PTHREAD_MUTEX=0
-USE_PTHREAD_SPINLOCK=0
-USE_OSX_SPINLOCK=0
-USE_OMP_LOCK=0
-USE_ATOMIC_SPINLOCK=0
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking mutex type" >&5
-$as_echo_n "checking mutex type... " >&6; }
-if test x"$mutex_type" = xpthread_mutex; then
-    if test x"$have_pthread_mutex" = xno; then
-        as_fn_error $? "pthread mutex requested but not available" "$LINENO" 5
-    fi
-    USE_PTHREAD_MUTEX=1
-elif test x"$mutex_type" = xpthread_spinlock; then
-    if test x"$have_pthread_spinlock" = xno; then
-        as_fn_error $? "pthread spinlock requested but not available" "$LINENO" 5
-    fi
-    USE_PTHREAD_SPINLOCK=1
-elif test x"$mutex_type" = xosx_spinlock; then
-    if test x"$have_osx_spinlock" = xno; then
-        as_fn_error $? "OSX OSSpinLock requested but not available" "$LINENO" 5
-    fi
-    USE_OSX_SPINLOCK=1
-elif test x"$mutex_type" = xomp_lock; then
-    if test x"$have_openmp" = xno; then
-        as_fn_error $? "omp_lock requested but not available" "$LINENO" 5
-    fi
-    USE_OMP_LOCK=1
-elif test x"$mutex_type" = xatomic_spinlock; then
-    USE_ATOMIC_SPINLOCK=1
-else
-    as_fn_error $? "invalid mutex type specified" "$LINENO" 5
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $mutex_type" >&5
-$as_echo "$mutex_type" >&6; }
-
-
-
-
-
-
-
-#
-# Determine barrier type
-#
-
-if test x"$barrier_type" = xauto; then
-    barrier_type=spin_barrier
-fi
-
-USE_PTHREAD_BARRIER=0
-USE_SPIN_BARRIER=0
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking barrier type" >&5
-$as_echo_n "checking barrier type... " >&6; }
-if test x"$barrier_type" = xpthread_barrier; then
-    if test x"$have_pthread_barrier" = xno; then
-        as_fn_error $? "pthread barrier requested but not available" "$LINENO" 5
-    fi
-    USE_PTHREAD_BARRIER=1
-elif test x"$barrier_type" = xspin_barrier; then
-    USE_SPIN_BARRIER=1
-else
-    as_fn_error $? "invalid barrier type specified" "$LINENO" 5
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $barrier_type" >&5
-$as_echo "$barrier_type" >&6; }
-
-
-
-
-#
-# Determine thread model
-#
-
-if test x"$thread_model" = xauto; then
-    if test x"$have_openmp" = xyes; then
-        thread_model=openmp
-    elif test x"$have_pthreads" = xyes; then
-        thread_model=pthread
-    elif test x"$have_tbb" = xyes; then
-        thread_model=tbb
-    else
-        thread_model=none
-    fi
-fi
-
-USE_OPENMP_THREADS=0
-USE_PTHREADS_THREADS=0
-USE_TBB_THREADS=0
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking thread model" >&5
-$as_echo_n "checking thread model... " >&6; }
-if test x"$thread_model" = xopenmp; then
-    if test x"$have_openmp" = xno; then
-        as_fn_error $? "openmp requested but not available" "$LINENO" 5
-    fi
-    USE_OPENMP_THREADS=1
-elif test x"$thread_model" = xpthread || \
-     test x"$thread_model" = xpthreads; then
-    if test x"$have_pthreads" = xno; then
-        as_fn_error $? "pthreads requested but not available" "$LINENO" 5
-    fi
-    USE_PTHREADS_THREADS=1
-elif test x"$thread_model" = xtbb; then
-    if test x"$have_tbb" = xno; then
-        as_fn_error $? "tbb requested but not available" "$LINENO" 5
-    fi
-    USE_TBB_THREADS=1
-elif test x"$thread_model" != xnone; then
-    as_fn_error $? "Invalid threading model specified." "$LINENO" 5
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $thread_model" >&5
-$as_echo "$thread_model" >&6; }
-
-
-
-
- if test x$USE_TBB_THREADS = x1; then
-  USE_TBB_TRUE=
-  USE_TBB_FALSE='#'
-else
-  USE_TBB_TRUE='#'
-  USE_TBB_FALSE=
-fi
-
-
-if test x$USE_TBB_THREADS = x1; then :
-      ax_cxx_compile_cxx11_required=true
-  ac_ext=cpp
-ac_cpp='$CXXCPP $CPPFLAGS'
-ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
-  ac_success=no
-
-
-
-    if test x$ac_success = xno; then
-    for switch in -std=c++11 -std=c++0x; do
-      cachevar=`$as_echo "ax_cv_cxx_compile_cxx11_$switch" | $as_tr_sh`
-      { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CXX supports C++11 features with $switch" >&5
-$as_echo_n "checking whether $CXX supports C++11 features with $switch... " >&6; }
-if eval \${$cachevar+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_save_CXXFLAGS="$CXXFLAGS"
-         CXXFLAGS="$CXXFLAGS $switch"
-         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-  template <typename T>
-    struct check
-    {
-      static_assert(sizeof(int) <= sizeof(T), "not big enough");
-    };
-
-    typedef check<check<bool>> right_angle_brackets;
-
-    int a;
-    decltype(a) b;
-
-    typedef check<int> check_type;
-    check_type c;
-    check_type&& cr = static_cast<check_type&&>(c);
-
-    auto d = a;
-    auto l = [](){};
-    // Prevent Clang error: unused variable 'l' [-Werror,-Wunused-variable]
-    struct use_l { use_l() { l(); } };
-
-    // http://stackoverflow.com/questions/13728184/template-aliases-and-sfinae
-    // Clang 3.1 fails with headers of libstd++ 4.8.3 when using std::function because of this
-    namespace test_template_alias_sfinae {
-        struct foo {};
-
-        template<typename T>
-        using member = typename T::member_type;
-
-        template<typename T>
-        void func(...) {}
-
-        template<typename T>
-        void func(member<T>*) {}
-
-        void test();
-
-        void test() {
-            func<foo>(0);
-        }
-    }
-
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  eval $cachevar=yes
-else
-  eval $cachevar=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-         CXXFLAGS="$ac_save_CXXFLAGS"
-fi
-eval ac_res=\$$cachevar
-	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
-$as_echo "$ac_res" >&6; }
-      if eval test x\$$cachevar = xyes; then
-        CXXFLAGS="$CXXFLAGS $switch"
-        ac_success=yes
-        break
-      fi
-    done
-  fi
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-  if test x$ax_cxx_compile_cxx11_required = xtrue; then
-    if test x$ac_success = xno; then
-      as_fn_error $? "*** A compiler with support for C++11 language features is required." "$LINENO" 5
-    fi
-  else
-    if test x$ac_success = xno; then
-      HAVE_CXX11=0
-      { $as_echo "$as_me:${as_lineno-$LINENO}: No compiler with C++11 support was found" >&5
-$as_echo "$as_me: No compiler with C++11 support was found" >&6;}
-    else
-      HAVE_CXX11=1
-
-$as_echo "#define HAVE_CXX11 1" >>confdefs.h
-
-    fi
-
-
-  fi
-
-fi
-
 case `pwd` in
   *\ * | *\	*)
     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: Libtool does not cope well with whitespace in \`pwd\`" >&5
@@ -7123,6 +4809,136 @@ Xsed="$SED -e 1s/^X//"
 
 
 
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for grep that handles long lines and -e" >&5
+$as_echo_n "checking for grep that handles long lines and -e... " >&6; }
+if ${ac_cv_path_GREP+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -z "$GREP"; then
+  ac_path_GREP_found=false
+  # Loop through the user's path and test for each of PROGNAME-LIST
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_prog in grep ggrep; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
+      ac_path_GREP="$as_dir/$ac_prog$ac_exec_ext"
+      as_fn_executable_p "$ac_path_GREP" || continue
+# Check for GNU ac_path_GREP and select it if it is found.
+  # Check for GNU $ac_path_GREP
+case `"$ac_path_GREP" --version 2>&1` in
+*GNU*)
+  ac_cv_path_GREP="$ac_path_GREP" ac_path_GREP_found=:;;
+*)
+  ac_count=0
+  $as_echo_n 0123456789 >"conftest.in"
+  while :
+  do
+    cat "conftest.in" "conftest.in" >"conftest.tmp"
+    mv "conftest.tmp" "conftest.in"
+    cp "conftest.in" "conftest.nl"
+    $as_echo 'GREP' >> "conftest.nl"
+    "$ac_path_GREP" -e 'GREP$' -e '-(cannot match)-' < "conftest.nl" >"conftest.out" 2>/dev/null || break
+    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
+    as_fn_arith $ac_count + 1 && ac_count=$as_val
+    if test $ac_count -gt ${ac_path_GREP_max-0}; then
+      # Best one so far, save it but keep looking for a better one
+      ac_cv_path_GREP="$ac_path_GREP"
+      ac_path_GREP_max=$ac_count
+    fi
+    # 10*(2^10) chars as input seems more than enough
+    test $ac_count -gt 10 && break
+  done
+  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
+esac
+
+      $ac_path_GREP_found && break 3
+    done
+  done
+  done
+IFS=$as_save_IFS
+  if test -z "$ac_cv_path_GREP"; then
+    as_fn_error $? "no acceptable grep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
+  fi
+else
+  ac_cv_path_GREP=$GREP
+fi
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_GREP" >&5
+$as_echo "$ac_cv_path_GREP" >&6; }
+ GREP="$ac_cv_path_GREP"
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for egrep" >&5
+$as_echo_n "checking for egrep... " >&6; }
+if ${ac_cv_path_EGREP+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if echo a | $GREP -E '(a|b)' >/dev/null 2>&1
+   then ac_cv_path_EGREP="$GREP -E"
+   else
+     if test -z "$EGREP"; then
+  ac_path_EGREP_found=false
+  # Loop through the user's path and test for each of PROGNAME-LIST
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH$PATH_SEPARATOR/usr/xpg4/bin
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_prog in egrep; do
+    for ac_exec_ext in '' $ac_executable_extensions; do
+      ac_path_EGREP="$as_dir/$ac_prog$ac_exec_ext"
+      as_fn_executable_p "$ac_path_EGREP" || continue
+# Check for GNU ac_path_EGREP and select it if it is found.
+  # Check for GNU $ac_path_EGREP
+case `"$ac_path_EGREP" --version 2>&1` in
+*GNU*)
+  ac_cv_path_EGREP="$ac_path_EGREP" ac_path_EGREP_found=:;;
+*)
+  ac_count=0
+  $as_echo_n 0123456789 >"conftest.in"
+  while :
+  do
+    cat "conftest.in" "conftest.in" >"conftest.tmp"
+    mv "conftest.tmp" "conftest.in"
+    cp "conftest.in" "conftest.nl"
+    $as_echo 'EGREP' >> "conftest.nl"
+    "$ac_path_EGREP" 'EGREP$' < "conftest.nl" >"conftest.out" 2>/dev/null || break
+    diff "conftest.out" "conftest.nl" >/dev/null 2>&1 || break
+    as_fn_arith $ac_count + 1 && ac_count=$as_val
+    if test $ac_count -gt ${ac_path_EGREP_max-0}; then
+      # Best one so far, save it but keep looking for a better one
+      ac_cv_path_EGREP="$ac_path_EGREP"
+      ac_path_EGREP_max=$ac_count
+    fi
+    # 10*(2^10) chars as input seems more than enough
+    test $ac_count -gt 10 && break
+  done
+  rm -f conftest.in conftest.tmp conftest.nl conftest.out;;
+esac
+
+      $ac_path_EGREP_found && break 3
+    done
+  done
+  done
+IFS=$as_save_IFS
+  if test -z "$ac_cv_path_EGREP"; then
+    as_fn_error $? "no acceptable egrep could be found in $PATH$PATH_SEPARATOR/usr/xpg4/bin" "$LINENO" 5
+  fi
+else
+  ac_cv_path_EGREP=$EGREP
+fi
+
+   fi
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_path_EGREP" >&5
+$as_echo "$ac_cv_path_EGREP" >&6; }
+ EGREP="$ac_cv_path_EGREP"
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for fgrep" >&5
@@ -8311,6 +6127,7 @@ fi
 $as_echo "$lt_cv_sharedlib_from_linklib_cmd" >&6; }
 sharedlib_from_linklib_cmd=$lt_cv_sharedlib_from_linklib_cmd
 test -z "$sharedlib_from_linklib_cmd" && sharedlib_from_linklib_cmd=$ECHO
+
 
 
 
@@ -10236,6 +8053,273 @@ func_munge_path_list ()
     esac
 }
 
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking how to run the C preprocessor" >&5
+$as_echo_n "checking how to run the C preprocessor... " >&6; }
+# On Suns, sometimes $CPP names a directory.
+if test -n "$CPP" && test -d "$CPP"; then
+  CPP=
+fi
+if test -z "$CPP"; then
+  if ${ac_cv_prog_CPP+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+      # Double quotes because CPP needs to be expanded
+    for CPP in "$CC -E" "$CC -E -traditional-cpp" "/lib/cpp"
+    do
+      ac_preproc_ok=false
+for ac_c_preproc_warn_flag in '' yes
+do
+  # Use a header file that comes with gcc, so configuring glibc
+  # with a fresh cross-compiler works.
+  # Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+  # <limits.h> exists even on freestanding compilers.
+  # On the NeXT, cc -E runs the code through the compiler's parser,
+  # not just through cpp. "Syntax error" is here to catch this case.
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+		     Syntax error
+_ACEOF
+if ac_fn_c_try_cpp "$LINENO"; then :
+
+else
+  # Broken: fails on valid input.
+continue
+fi
+rm -f conftest.err conftest.i conftest.$ac_ext
+
+  # OK, works on sane cases.  Now check whether nonexistent headers
+  # can be detected and how.
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <ac_nonexistent.h>
+_ACEOF
+if ac_fn_c_try_cpp "$LINENO"; then :
+  # Broken: success on invalid input.
+continue
+else
+  # Passes both tests.
+ac_preproc_ok=:
+break
+fi
+rm -f conftest.err conftest.i conftest.$ac_ext
+
+done
+# Because of `break', _AC_PREPROC_IFELSE's cleaning code was skipped.
+rm -f conftest.i conftest.err conftest.$ac_ext
+if $ac_preproc_ok; then :
+  break
+fi
+
+    done
+    ac_cv_prog_CPP=$CPP
+
+fi
+  CPP=$ac_cv_prog_CPP
+else
+  ac_cv_prog_CPP=$CPP
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $CPP" >&5
+$as_echo "$CPP" >&6; }
+ac_preproc_ok=false
+for ac_c_preproc_warn_flag in '' yes
+do
+  # Use a header file that comes with gcc, so configuring glibc
+  # with a fresh cross-compiler works.
+  # Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+  # <limits.h> exists even on freestanding compilers.
+  # On the NeXT, cc -E runs the code through the compiler's parser,
+  # not just through cpp. "Syntax error" is here to catch this case.
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+		     Syntax error
+_ACEOF
+if ac_fn_c_try_cpp "$LINENO"; then :
+
+else
+  # Broken: fails on valid input.
+continue
+fi
+rm -f conftest.err conftest.i conftest.$ac_ext
+
+  # OK, works on sane cases.  Now check whether nonexistent headers
+  # can be detected and how.
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <ac_nonexistent.h>
+_ACEOF
+if ac_fn_c_try_cpp "$LINENO"; then :
+  # Broken: success on invalid input.
+continue
+else
+  # Passes both tests.
+ac_preproc_ok=:
+break
+fi
+rm -f conftest.err conftest.i conftest.$ac_ext
+
+done
+# Because of `break', _AC_PREPROC_IFELSE's cleaning code was skipped.
+rm -f conftest.i conftest.err conftest.$ac_ext
+if $ac_preproc_ok; then :
+
+else
+  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error $? "C preprocessor \"$CPP\" fails sanity check
+See \`config.log' for more details" "$LINENO" 5; }
+fi
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for ANSI C header files" >&5
+$as_echo_n "checking for ANSI C header files... " >&6; }
+if ${ac_cv_header_stdc+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
+#include <float.h>
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  ac_cv_header_stdc=yes
+else
+  ac_cv_header_stdc=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+
+if test $ac_cv_header_stdc = yes; then
+  # SunOS 4.x string.h does not declare mem*, contrary to ANSI.
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <string.h>
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "memchr" >/dev/null 2>&1; then :
+
+else
+  ac_cv_header_stdc=no
+fi
+rm -f conftest*
+
+fi
+
+if test $ac_cv_header_stdc = yes; then
+  # ISC 2.0.2 stdlib.h does not declare free, contrary to ANSI.
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <stdlib.h>
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "free" >/dev/null 2>&1; then :
+
+else
+  ac_cv_header_stdc=no
+fi
+rm -f conftest*
+
+fi
+
+if test $ac_cv_header_stdc = yes; then
+  # /bin/cc in Irix-4.0.5 gets non-ANSI ctype macros unless using -ansi.
+  if test "$cross_compiling" = yes; then :
+  :
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <ctype.h>
+#include <stdlib.h>
+#if ((' ' & 0x0FF) == 0x020)
+# define ISLOWER(c) ('a' <= (c) && (c) <= 'z')
+# define TOUPPER(c) (ISLOWER(c) ? 'A' + ((c) - 'a') : (c))
+#else
+# define ISLOWER(c) \
+		   (('a' <= (c) && (c) <= 'i') \
+		     || ('j' <= (c) && (c) <= 'r') \
+		     || ('s' <= (c) && (c) <= 'z'))
+# define TOUPPER(c) (ISLOWER(c) ? ((c) | 0x40) : (c))
+#endif
+
+#define XOR(e, f) (((e) && !(f)) || (!(e) && (f)))
+int
+main ()
+{
+  int i;
+  for (i = 0; i < 256; i++)
+    if (XOR (islower (i), ISLOWER (i))
+	|| toupper (i) != TOUPPER (i))
+      return 2;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_run "$LINENO"; then :
+
+else
+  ac_cv_header_stdc=no
+fi
+rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
+  conftest.$ac_objext conftest.beam conftest.$ac_ext
+fi
+
+fi
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_header_stdc" >&5
+$as_echo "$ac_cv_header_stdc" >&6; }
+if test $ac_cv_header_stdc = yes; then
+
+$as_echo "#define STDC_HEADERS 1" >>confdefs.h
+
+fi
+
+# On IRIX 5.3, sys/types and inttypes.h are conflicting.
+for ac_header in sys/types.h sys/stat.h stdlib.h string.h memory.h strings.h \
+		  inttypes.h stdint.h unistd.h
+do :
+  as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
+ac_fn_c_check_header_compile "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default
+"
+if eval test \"x\$"$as_ac_Header"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_header" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+
+done
+
+
 for ac_header in dlfcn.h
 do :
   ac_fn_c_check_header_compile "$LINENO" "dlfcn.h" "ac_cv_header_dlfcn_h" "$ac_includes_default
@@ -10248,6 +8332,7 @@ _ACEOF
 fi
 
 done
+
 
 
 
@@ -17864,6 +15949,2634 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+#
+# Get user preferences
+#
+
+# Check whether --enable-mutex was given.
+if test "${enable_mutex+set}" = set; then :
+  enableval=$enable_mutex; mutex_type=$enable_mutex
+else
+  mutex_type=auto
+fi
+
+
+# Check whether --enable-barrier was given.
+if test "${enable_barrier+set}" = set; then :
+  enableval=$enable_barrier; barrier_type=$enable_barrier
+else
+  barrier_type=auto
+fi
+
+
+# Check whether --enable-thread-model was given.
+if test "${enable_thread_model+set}" = set; then :
+  enableval=$enable_thread_model; thread_model=$enable_thread_model
+else
+  thread_model=auto
+fi
+
+
+# Check whether --enable-threading was given.
+if test "${enable_threading+set}" = set; then :
+  enableval=$enable_threading; thread_model=$enable_threading
+fi
+
+
+if test x"$thread_model" = xno; then
+    thread_model=none
+fi
+
+#
+# Check for pthreads
+#
+
+
+
+
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ax_pthread_ok=no
+
+# We used to check for pthread.h first, but this fails if pthread.h
+# requires special compiler flags (e.g. on Tru64 or Sequent).
+# It gets checked for in the link test anyway.
+
+# First of all, check if the user has set any of the PTHREAD_LIBS,
+# etcetera environment variables, and if threads linking works using
+# them:
+if test "x$PTHREAD_CFLAGS$PTHREAD_LIBS" != "x"; then
+        ax_pthread_save_CC="$CC"
+        ax_pthread_save_CFLAGS="$CFLAGS"
+        ax_pthread_save_LIBS="$LIBS"
+        if test "x$PTHREAD_CC" != "x"; then :
+  CC="$PTHREAD_CC"
+fi
+        CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+        LIBS="$PTHREAD_LIBS $LIBS"
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pthread_join using $CC $PTHREAD_CFLAGS $PTHREAD_LIBS" >&5
+$as_echo_n "checking for pthread_join using $CC $PTHREAD_CFLAGS $PTHREAD_LIBS... " >&6; }
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char pthread_join ();
+int
+main ()
+{
+return pthread_join ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_pthread_ok=yes
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_pthread_ok" >&5
+$as_echo "$ax_pthread_ok" >&6; }
+        if test "x$ax_pthread_ok" = "xno"; then
+                PTHREAD_LIBS=""
+                PTHREAD_CFLAGS=""
+        fi
+        CC="$ax_pthread_save_CC"
+        CFLAGS="$ax_pthread_save_CFLAGS"
+        LIBS="$ax_pthread_save_LIBS"
+fi
+
+# We must check for the threads library under a number of different
+# names; the ordering is very important because some systems
+# (e.g. DEC) have both -lpthread and -lpthreads, where one of the
+# libraries is broken (non-POSIX).
+
+# Create a list of thread flags to try.  Items starting with a "-" are
+# C compiler flags, and other items are library names, except for "none"
+# which indicates that we try without any flags at all, and "pthread-config"
+# which is a program returning the flags for the Pth emulation library.
+
+ax_pthread_flags="pthreads none -Kthread -pthread -pthreads -mthreads pthread --thread-safe -mt pthread-config"
+
+# The ordering *is* (sometimes) important.  Some notes on the
+# individual items follow:
+
+# pthreads: AIX (must check this before -lpthread)
+# none: in case threads are in libc; should be tried before -Kthread and
+#       other compiler flags to prevent continual compiler warnings
+# -Kthread: Sequent (threads in libc, but -Kthread needed for pthread.h)
+# -pthread: Linux/gcc (kernel threads), BSD/gcc (userland threads), Tru64
+#           (Note: HP C rejects this with "bad form for `-t' option")
+# -pthreads: Solaris/gcc (Note: HP C also rejects)
+# -mt: Sun Workshop C (may only link SunOS threads [-lthread], but it
+#      doesn't hurt to check since this sometimes defines pthreads and
+#      -D_REENTRANT too), HP C (must be checked before -lpthread, which
+#      is present but should not be used directly; and before -mthreads,
+#      because the compiler interprets this as "-mt" + "-hreads")
+# -mthreads: Mingw32/gcc, Lynx/gcc
+# pthread: Linux, etcetera
+# --thread-safe: KAI C++
+# pthread-config: use pthread-config program (for GNU Pth library)
+
+case $host_os in
+
+        freebsd*)
+
+        # -kthread: FreeBSD kernel threads (preferred to -pthread since SMP-able)
+        # lthread: LinuxThreads port on FreeBSD (also preferred to -pthread)
+
+        ax_pthread_flags="-kthread lthread $ax_pthread_flags"
+        ;;
+
+        hpux*)
+
+        # From the cc(1) man page: "[-mt] Sets various -D flags to enable
+        # multi-threading and also sets -lpthread."
+
+        ax_pthread_flags="-mt -pthread pthread $ax_pthread_flags"
+        ;;
+
+        openedition*)
+
+        # IBM z/OS requires a feature-test macro to be defined in order to
+        # enable POSIX threads at all, so give the user a hint if this is
+        # not set. (We don't define these ourselves, as they can affect
+        # other portions of the system API in unpredictable ways.)
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#            if !defined(_OPEN_THREADS) && !defined(_UNIX03_THREADS)
+             AX_PTHREAD_ZOS_MISSING
+#            endif
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "AX_PTHREAD_ZOS_MISSING" >/dev/null 2>&1; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: IBM z/OS requires -D_OPEN_THREADS or -D_UNIX03_THREADS to enable pthreads support." >&5
+$as_echo "$as_me: WARNING: IBM z/OS requires -D_OPEN_THREADS or -D_UNIX03_THREADS to enable pthreads support." >&2;}
+fi
+rm -f conftest*
+
+        ;;
+
+        solaris*)
+
+        # On Solaris (at least, for some versions), libc contains stubbed
+        # (non-functional) versions of the pthreads routines, so link-based
+        # tests will erroneously succeed. (N.B.: The stubs are missing
+        # pthread_cleanup_push, or rather a function called by this macro,
+        # so we could check for that, but who knows whether they'll stub
+        # that too in a future libc.)  So we'll check first for the
+        # standard Solaris way of linking pthreads (-mt -lpthread).
+
+        ax_pthread_flags="-mt,pthread pthread $ax_pthread_flags"
+        ;;
+esac
+
+# GCC generally uses -pthread, or -pthreads on some platforms (e.g. SPARC)
+
+if test "x$GCC" = "xyes"; then :
+  ax_pthread_flags="-pthread -pthreads $ax_pthread_flags"
+fi
+
+# The presence of a feature test macro requesting re-entrant function
+# definitions is, on some systems, a strong hint that pthreads support is
+# correctly enabled
+
+case $host_os in
+        darwin* | hpux* | linux* | osf* | solaris*)
+        ax_pthread_check_macro="_REENTRANT"
+        ;;
+
+        aix*)
+        ax_pthread_check_macro="_THREAD_SAFE"
+        ;;
+
+        *)
+        ax_pthread_check_macro="--"
+        ;;
+esac
+if test "x$ax_pthread_check_macro" = "x--"; then :
+  ax_pthread_check_cond=0
+else
+  ax_pthread_check_cond="!defined($ax_pthread_check_macro)"
+fi
+
+# Are we compiling with Clang?
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CC is Clang" >&5
+$as_echo_n "checking whether $CC is Clang... " >&6; }
+if ${ax_cv_PTHREAD_CLANG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ax_cv_PTHREAD_CLANG=no
+     # Note that Autoconf sets GCC=yes for Clang as well as GCC
+     if test "x$GCC" = "xyes"; then
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+/* Note: Clang 2.7 lacks __clang_[a-z]+__ */
+#            if defined(__clang__) && defined(__llvm__)
+             AX_PTHREAD_CC_IS_CLANG
+#            endif
+
+_ACEOF
+if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
+  $EGREP "AX_PTHREAD_CC_IS_CLANG" >/dev/null 2>&1; then :
+  ax_cv_PTHREAD_CLANG=yes
+fi
+rm -f conftest*
+
+     fi
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_PTHREAD_CLANG" >&5
+$as_echo "$ax_cv_PTHREAD_CLANG" >&6; }
+ax_pthread_clang="$ax_cv_PTHREAD_CLANG"
+
+ax_pthread_clang_warning=no
+
+# Clang needs special handling, because older versions handle the -pthread
+# option in a rather... idiosyncratic way
+
+if test "x$ax_pthread_clang" = "xyes"; then
+
+        # Clang takes -pthread; it has never supported any other flag
+
+        # (Note 1: This will need to be revisited if a system that Clang
+        # supports has POSIX threads in a separate library.  This tends not
+        # to be the way of modern systems, but it's conceivable.)
+
+        # (Note 2: On some systems, notably Darwin, -pthread is not needed
+        # to get POSIX threads support; the API is always present and
+        # active.  We could reasonably leave PTHREAD_CFLAGS empty.  But
+        # -pthread does define _REENTRANT, and while the Darwin headers
+        # ignore this macro, third-party headers might not.)
+
+        PTHREAD_CFLAGS="-pthread"
+        PTHREAD_LIBS=
+
+        ax_pthread_ok=yes
+
+        # However, older versions of Clang make a point of warning the user
+        # that, in an invocation where only linking and no compilation is
+        # taking place, the -pthread option has no effect ("argument unused
+        # during compilation").  They expect -pthread to be passed in only
+        # when source code is being compiled.
+        #
+        # Problem is, this is at odds with the way Automake and most other
+        # C build frameworks function, which is that the same flags used in
+        # compilation (CFLAGS) are also used in linking.  Many systems
+        # supported by AX_PTHREAD require exactly this for POSIX threads
+        # support, and in fact it is often not straightforward to specify a
+        # flag that is used only in the compilation phase and not in
+        # linking.  Such a scenario is extremely rare in practice.
+        #
+        # Even though use of the -pthread flag in linking would only print
+        # a warning, this can be a nuisance for well-run software projects
+        # that build with -Werror.  So if the active version of Clang has
+        # this misfeature, we search for an option to squash it.
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether Clang needs flag to prevent \"argument unused\" warning when linking with -pthread" >&5
+$as_echo_n "checking whether Clang needs flag to prevent \"argument unused\" warning when linking with -pthread... " >&6; }
+if ${ax_cv_PTHREAD_CLANG_NO_WARN_FLAG+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ax_cv_PTHREAD_CLANG_NO_WARN_FLAG=unknown
+             # Create an alternate version of $ac_link that compiles and
+             # links in two steps (.c -> .o, .o -> exe) instead of one
+             # (.c -> exe), because the warning occurs only in the second
+             # step
+             ax_pthread_save_ac_link="$ac_link"
+             ax_pthread_sed='s/conftest\.\$ac_ext/conftest.$ac_objext/g'
+             ax_pthread_link_step=`$as_echo "$ac_link" | sed "$ax_pthread_sed"`
+             ax_pthread_2step_ac_link="($ac_compile) && (echo ==== >&5) && ($ax_pthread_link_step)"
+             ax_pthread_save_CFLAGS="$CFLAGS"
+             for ax_pthread_try in '' -Qunused-arguments -Wno-unused-command-line-argument unknown; do
+                if test "x$ax_pthread_try" = "xunknown"; then :
+  break
+fi
+                CFLAGS="-Werror -Wunknown-warning-option $ax_pthread_try -pthread $ax_pthread_save_CFLAGS"
+                ac_link="$ax_pthread_save_ac_link"
+                cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+int main(void){return 0;}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_link="$ax_pthread_2step_ac_link"
+                     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+int main(void){return 0;}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  break
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+             done
+             ac_link="$ax_pthread_save_ac_link"
+             CFLAGS="$ax_pthread_save_CFLAGS"
+             if test "x$ax_pthread_try" = "x"; then :
+  ax_pthread_try=no
+fi
+             ax_cv_PTHREAD_CLANG_NO_WARN_FLAG="$ax_pthread_try"
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_PTHREAD_CLANG_NO_WARN_FLAG" >&5
+$as_echo "$ax_cv_PTHREAD_CLANG_NO_WARN_FLAG" >&6; }
+
+        case "$ax_cv_PTHREAD_CLANG_NO_WARN_FLAG" in
+                no | unknown) ;;
+                *) PTHREAD_CFLAGS="$ax_cv_PTHREAD_CLANG_NO_WARN_FLAG $PTHREAD_CFLAGS" ;;
+        esac
+
+fi # $ax_pthread_clang = yes
+
+if test "x$ax_pthread_ok" = "xno"; then
+for ax_pthread_try_flag in $ax_pthread_flags; do
+
+        case $ax_pthread_try_flag in
+                none)
+                { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether pthreads work without any flags" >&5
+$as_echo_n "checking whether pthreads work without any flags... " >&6; }
+                ;;
+
+                -mt,pthread)
+                { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether pthreads work with -mt -lpthread" >&5
+$as_echo_n "checking whether pthreads work with -mt -lpthread... " >&6; }
+                PTHREAD_CFLAGS="-mt"
+                PTHREAD_LIBS="-lpthread"
+                ;;
+
+                -*)
+                { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether pthreads work with $ax_pthread_try_flag" >&5
+$as_echo_n "checking whether pthreads work with $ax_pthread_try_flag... " >&6; }
+                PTHREAD_CFLAGS="$ax_pthread_try_flag"
+                ;;
+
+                pthread-config)
+                # Extract the first word of "pthread-config", so it can be a program name with args.
+set dummy pthread-config; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_ax_pthread_config+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$ax_pthread_config"; then
+  ac_cv_prog_ax_pthread_config="$ax_pthread_config" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_ax_pthread_config="yes"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_prog_ax_pthread_config" && ac_cv_prog_ax_pthread_config="no"
+fi
+fi
+ax_pthread_config=$ac_cv_prog_ax_pthread_config
+if test -n "$ax_pthread_config"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_pthread_config" >&5
+$as_echo "$ax_pthread_config" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+                if test "x$ax_pthread_config" = "xno"; then :
+  continue
+fi
+                PTHREAD_CFLAGS="`pthread-config --cflags`"
+                PTHREAD_LIBS="`pthread-config --ldflags` `pthread-config --libs`"
+                ;;
+
+                *)
+                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for the pthreads library -l$ax_pthread_try_flag" >&5
+$as_echo_n "checking for the pthreads library -l$ax_pthread_try_flag... " >&6; }
+                PTHREAD_LIBS="-l$ax_pthread_try_flag"
+                ;;
+        esac
+
+        ax_pthread_save_CFLAGS="$CFLAGS"
+        ax_pthread_save_LIBS="$LIBS"
+        CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+        LIBS="$PTHREAD_LIBS $LIBS"
+
+        # Check for various functions.  We must include pthread.h,
+        # since some functions may be macros.  (On the Sequent, we
+        # need a special flag -Kthread to make this header compile.)
+        # We check for pthread_join because it is in -lpthread on IRIX
+        # while pthread_create is in libc.  We check for pthread_attr_init
+        # due to DEC craziness with -lpthreads.  We check for
+        # pthread_cleanup_push because it is one of the few pthread
+        # functions on Solaris that doesn't have a non-functional libc stub.
+        # We try pthread_create on general principles.
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <pthread.h>
+#                       if $ax_pthread_check_cond
+#                        error "$ax_pthread_check_macro must be defined"
+#                       endif
+                        static void routine(void *a) { a = 0; }
+                        static void *start_routine(void *a) { return a; }
+int
+main ()
+{
+pthread_t th; pthread_attr_t attr;
+                        pthread_create(&th, 0, start_routine, 0);
+                        pthread_join(th, 0);
+                        pthread_attr_init(&attr);
+                        pthread_cleanup_push(routine, 0);
+                        pthread_cleanup_pop(0) /* ; */
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_pthread_ok=yes
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+        CFLAGS="$ax_pthread_save_CFLAGS"
+        LIBS="$ax_pthread_save_LIBS"
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_pthread_ok" >&5
+$as_echo "$ax_pthread_ok" >&6; }
+        if test "x$ax_pthread_ok" = "xyes"; then :
+  break
+fi
+
+        PTHREAD_LIBS=""
+        PTHREAD_CFLAGS=""
+done
+fi
+
+# Various other checks:
+if test "x$ax_pthread_ok" = "xyes"; then
+        ax_pthread_save_CFLAGS="$CFLAGS"
+        ax_pthread_save_LIBS="$LIBS"
+        CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+        LIBS="$PTHREAD_LIBS $LIBS"
+
+        # Detect AIX lossage: JOINABLE attribute is called UNDETACHED.
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for joinable pthread attribute" >&5
+$as_echo_n "checking for joinable pthread attribute... " >&6; }
+if ${ax_cv_PTHREAD_JOINABLE_ATTR+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ax_cv_PTHREAD_JOINABLE_ATTR=unknown
+             for ax_pthread_attr in PTHREAD_CREATE_JOINABLE PTHREAD_CREATE_UNDETACHED; do
+                 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <pthread.h>
+int
+main ()
+{
+int attr = $ax_pthread_attr; return attr /* ; */
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_PTHREAD_JOINABLE_ATTR=$ax_pthread_attr; break
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+             done
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_PTHREAD_JOINABLE_ATTR" >&5
+$as_echo "$ax_cv_PTHREAD_JOINABLE_ATTR" >&6; }
+        if test "x$ax_cv_PTHREAD_JOINABLE_ATTR" != "xunknown" && \
+               test "x$ax_cv_PTHREAD_JOINABLE_ATTR" != "xPTHREAD_CREATE_JOINABLE" && \
+               test "x$ax_pthread_joinable_attr_defined" != "xyes"; then :
+
+cat >>confdefs.h <<_ACEOF
+#define PTHREAD_CREATE_JOINABLE $ax_cv_PTHREAD_JOINABLE_ATTR
+_ACEOF
+
+               ax_pthread_joinable_attr_defined=yes
+
+fi
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether more special flags are required for pthreads" >&5
+$as_echo_n "checking whether more special flags are required for pthreads... " >&6; }
+if ${ax_cv_PTHREAD_SPECIAL_FLAGS+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ax_cv_PTHREAD_SPECIAL_FLAGS=no
+             case $host_os in
+             solaris*)
+             ax_cv_PTHREAD_SPECIAL_FLAGS="-D_POSIX_PTHREAD_SEMANTICS"
+             ;;
+             esac
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_PTHREAD_SPECIAL_FLAGS" >&5
+$as_echo "$ax_cv_PTHREAD_SPECIAL_FLAGS" >&6; }
+        if test "x$ax_cv_PTHREAD_SPECIAL_FLAGS" != "xno" && \
+               test "x$ax_pthread_special_flags_added" != "xyes"; then :
+  PTHREAD_CFLAGS="$ax_cv_PTHREAD_SPECIAL_FLAGS $PTHREAD_CFLAGS"
+               ax_pthread_special_flags_added=yes
+fi
+
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for PTHREAD_PRIO_INHERIT" >&5
+$as_echo_n "checking for PTHREAD_PRIO_INHERIT... " >&6; }
+if ${ax_cv_PTHREAD_PRIO_INHERIT+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <pthread.h>
+int
+main ()
+{
+int i = PTHREAD_PRIO_INHERIT;
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_PTHREAD_PRIO_INHERIT=yes
+else
+  ax_cv_PTHREAD_PRIO_INHERIT=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_PTHREAD_PRIO_INHERIT" >&5
+$as_echo "$ax_cv_PTHREAD_PRIO_INHERIT" >&6; }
+        if test "x$ax_cv_PTHREAD_PRIO_INHERIT" = "xyes" && \
+               test "x$ax_pthread_prio_inherit_defined" != "xyes"; then :
+
+$as_echo "#define HAVE_PTHREAD_PRIO_INHERIT 1" >>confdefs.h
+
+               ax_pthread_prio_inherit_defined=yes
+
+fi
+
+        CFLAGS="$ax_pthread_save_CFLAGS"
+        LIBS="$ax_pthread_save_LIBS"
+
+        # More AIX lossage: compile with *_r variant
+        if test "x$GCC" != "xyes"; then
+            case $host_os in
+                aix*)
+                case "x/$CC" in #(
+  x*/c89|x*/c89_128|x*/c99|x*/c99_128|x*/cc|x*/cc128|x*/xlc|x*/xlc_v6|x*/xlc128|x*/xlc128_v6) :
+    #handle absolute path differently from PATH based program lookup
+                     case "x$CC" in #(
+  x/*) :
+    if as_fn_executable_p ${CC}_r; then :
+  PTHREAD_CC="${CC}_r"
+fi ;; #(
+  *) :
+    for ac_prog in ${CC}_r
+do
+  # Extract the first word of "$ac_prog", so it can be a program name with args.
+set dummy $ac_prog; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_PTHREAD_CC+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$PTHREAD_CC"; then
+  ac_cv_prog_PTHREAD_CC="$PTHREAD_CC" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_prog_PTHREAD_CC="$ac_prog"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+PTHREAD_CC=$ac_cv_prog_PTHREAD_CC
+if test -n "$PTHREAD_CC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PTHREAD_CC" >&5
+$as_echo "$PTHREAD_CC" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+  test -n "$PTHREAD_CC" && break
+done
+test -n "$PTHREAD_CC" || PTHREAD_CC="$CC"
+ ;;
+esac ;; #(
+  *) :
+     ;;
+esac
+                ;;
+            esac
+        fi
+fi
+
+test -n "$PTHREAD_CC" || PTHREAD_CC="$CC"
+
+
+
+
+
+# Finally, execute ACTION-IF-FOUND/ACTION-IF-NOT-FOUND:
+if test "x$ax_pthread_ok" = "xyes"; then
+        have_pthreads=yes
+        :
+else
+        ax_pthread_ok=no
+        have_pthreads=no
+fi
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+
+have_pthread_mutex=no
+have_pthread_spin=no
+have_pthread_barrier=no
+
+if test x$have_pthreads = xyes; then
+    LIBS_save="$LIBS"
+    CFLAGS_save="$CFLAGS"
+    LIBS="$LIBS $PTHREAD_LIBS"
+    CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+
+    for ac_func in pthread_spin_init pthread_mutex_init pthread_barrier_init
+do :
+  as_ac_var=`$as_echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ac_fn_c_check_func "$LINENO" "$ac_func" "$as_ac_var"
+if eval test \"x\$"$as_ac_var"\" = x"yes"; then :
+  cat >>confdefs.h <<_ACEOF
+#define `$as_echo "HAVE_$ac_func" | $as_tr_cpp` 1
+_ACEOF
+
+fi
+done
+
+
+    if test x"$ac_cv_header_pthread_h" = xyes -a \
+            x"$ac_cv_func_pthread_mutex_init" = xyes; then
+        have_pthread_mutex=yes
+    fi
+
+    if test x"$ac_cv_header_pthread_h" = xyes -a \
+            x"$ac_cv_func_pthread_spin_init" = xyes; then
+        have_pthread_spin=yes
+    fi
+
+    if test x"$ac_cv_header_pthread_h" = xyes -a \
+            x"$ac_cv_func_pthread_barrier_init" = xyes; then
+        have_pthread_barrier=yes
+    fi
+
+    LIBS="$LIBS_save"
+    CFLAGS="$CFLAGS_save"
+fi
+
+#
+# Check for OpenMP
+#
+
+
+  OPENMP_CFLAGS=
+  # Check whether --enable-openmp was given.
+if test "${enable_openmp+set}" = set; then :
+  enableval=$enable_openmp;
+fi
+
+  if test "$enable_openmp" != no; then
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $CC option to support OpenMP" >&5
+$as_echo_n "checking for $CC option to support OpenMP... " >&6; }
+if ${ac_cv_prog_c_openmp+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#ifndef _OPENMP
+ choke me
+#endif
+#include <omp.h>
+int main () { return omp_get_num_threads (); }
+
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_prog_c_openmp='none needed'
+else
+  ac_cv_prog_c_openmp='unsupported'
+	  	  	  	  	  	  	                                	  	  	  	  	  	  for ac_option in -fopenmp -xopenmp -openmp -mp -omp -qsmp=omp -homp \
+                           -Popenmp --openmp; do
+	    ac_save_CFLAGS=$CFLAGS
+	    CFLAGS="$CFLAGS $ac_option"
+	    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#ifndef _OPENMP
+ choke me
+#endif
+#include <omp.h>
+int main () { return omp_get_num_threads (); }
+
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_prog_c_openmp=$ac_option
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+	    CFLAGS=$ac_save_CFLAGS
+	    if test "$ac_cv_prog_c_openmp" != unsupported; then
+	      break
+	    fi
+	  done
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_prog_c_openmp" >&5
+$as_echo "$ac_cv_prog_c_openmp" >&6; }
+    case $ac_cv_prog_c_openmp in #(
+      "none needed" | unsupported)
+	;; #(
+      *)
+	OPENMP_CFLAGS=$ac_cv_prog_c_openmp ;;
+    esac
+  fi
+
+
+CFLAGS_save="$CFLAGS"
+CFLAGS="$CFLAGS $OPENMP_CFLAGS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#include "omp.h"
+#ifndef _OPENMP
+#error
+#endif
+
+_ACEOF
+if ac_fn_c_try_compile "$LINENO"; then :
+  have_openmp="yes"
+else
+  have_openmp="no"
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+CFLAGS="$CFLAGS_save"
+
+#
+# Check for TBB
+#
+
+ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+LIBS_save="$LIBS"
+
+
+for ac_header in tbb/tbb.h
+do :
+  ac_fn_cxx_check_header_mongrel "$LINENO" "tbb/tbb.h" "ac_cv_header_tbb_tbb_h" "$ac_includes_default"
+if test "x$ac_cv_header_tbb_tbb_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_TBB_TBB_H 1
+_ACEOF
+
+fi
+
+done
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing TBB_runtime_interface_version" >&5
+$as_echo_n "checking for library containing TBB_runtime_interface_version... " >&6; }
+if ${ac_cv_search_TBB_runtime_interface_version+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char TBB_runtime_interface_version ();
+int
+main ()
+{
+return TBB_runtime_interface_version ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' tbb; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_cxx_try_link "$LINENO"; then :
+  ac_cv_search_TBB_runtime_interface_version=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if ${ac_cv_search_TBB_runtime_interface_version+:} false; then :
+  break
+fi
+done
+if ${ac_cv_search_TBB_runtime_interface_version+:} false; then :
+
+else
+  ac_cv_search_TBB_runtime_interface_version=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_TBB_runtime_interface_version" >&5
+$as_echo "$ac_cv_search_TBB_runtime_interface_version" >&6; }
+ac_res=$ac_cv_search_TBB_runtime_interface_version
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+fi
+
+
+if test x"$ac_cv_header_tbb_tbb_h" = xyes && \
+   test x"$ac_cv_search_TBB_runtime_interface_version" != xno; then
+    have_tbb=yes
+    if test x"$ac_cv_search_TBB_runtime_interface_version" != "xnone required"; then
+        TBB_LIBS="$ac_cv_search_TBB_runtime_interface_version"
+    fi
+else
+    have_tbb=no
+fi
+
+LIBS="$LIBS_save"
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+#
+# Check for libdispatch
+#
+
+LIBS_save="$LIBS"
+
+for ac_header in dispatch/dispatch.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "dispatch/dispatch.h" "ac_cv_header_dispatch_dispatch_h" "$ac_includes_default"
+if test "x$ac_cv_header_dispatch_dispatch_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_DISPATCH_DISPATCH_H 1
+_ACEOF
+
+fi
+
+done
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing dispatch_async_f" >&5
+$as_echo_n "checking for library containing dispatch_async_f... " >&6; }
+if ${ac_cv_search_dispatch_async_f+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char dispatch_async_f ();
+int
+main ()
+{
+return dispatch_async_f ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' dispatch; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search_dispatch_async_f=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if ${ac_cv_search_dispatch_async_f+:} false; then :
+  break
+fi
+done
+if ${ac_cv_search_dispatch_async_f+:} false; then :
+
+else
+  ac_cv_search_dispatch_async_f=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_dispatch_async_f" >&5
+$as_echo "$ac_cv_search_dispatch_async_f" >&6; }
+ac_res=$ac_cv_search_dispatch_async_f
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+fi
+
+
+if test x"$ac_cv_header_dispatch_dispatch_h" = xyes && \
+   test x"$ac_cv_search_dispatch_async_f" != xno; then
+    have_gcd=yes
+    if test x"$ac_cv_search_dispatch_async_f" != "xnone required"; then
+        DISPATCH_LIBS="$ac_cv_search_dispatch_async_f"
+    fi
+else
+    have_gcd=no
+fi
+
+LIBS="$LIBS_save"
+
+#
+# Check for Windows
+#
+
+for ac_header in windows.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "windows.h" "ac_cv_header_windows_h" "$ac_includes_default"
+if test "x$ac_cv_header_windows_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_WINDOWS_H 1
+_ACEOF
+
+fi
+
+done
+
+
+if test x"$ac_cv_header_windows_h" = xyes; then
+    have_windows=yes
+else
+    have_windows=no
+fi
+
+#
+# Check for PPL
+#
+
+LIBS_save="$LIBS"
+
+for ac_header in ppl.h
+do :
+  ac_fn_c_check_header_mongrel "$LINENO" "ppl.h" "ac_cv_header_ppl_h" "$ac_includes_default"
+if test "x$ac_cv_header_ppl_h" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_PPL_H 1
+_ACEOF
+
+fi
+
+done
+
+
+if test x"$ac_cv_header_ppl_h" = xyes; then
+    have_ppl=yes
+else
+    have_ppl=no
+fi
+
+#
+# Check for OSSpinLock
+#
+
+ac_fn_c_check_header_mongrel "$LINENO" "libkern/OSAtomic.h" "ac_cv_header_libkern_OSAtomic_h" "$ac_includes_default"
+if test "x$ac_cv_header_libkern_OSAtomic_h" = xyes; then :
+
+fi
+
+
+for ac_func in OSSpinLockLock
+do :
+  ac_fn_c_check_func "$LINENO" "OSSpinLockLock" "ac_cv_func_OSSpinLockLock"
+if test "x$ac_cv_func_OSSpinLockLock" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_OSSPINLOCKLOCK 1
+_ACEOF
+
+fi
+done
+
+
+if test x"$ac_cv_header_libkern_OSAtomic_h" = xyes -a \
+        x"$ac_cv_func_OSSpinLockLock" = xyes; then
+    have_osx_spinlock=yes
+else
+    have_osx_spinlock=no
+fi
+
+#
+# Check for __atomic builtins
+#
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_load_n" >&5
+$as_echo_n "checking for __atomic_load_n... " >&6; }
+if ${ax_cv_have___atomic_load_n+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_load_n((int*)0, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_load_n=yes
+else
+  ax_cv_have___atomic_load_n=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_load_n" >&5
+$as_echo "$ax_cv_have___atomic_load_n" >&6; }
+
+    if test yes = $ax_cv_have___atomic_load_n; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_LOAD_N 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_load" >&5
+$as_echo_n "checking for __atomic_load... " >&6; }
+if ${ax_cv_have___atomic_load+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_load((int*)0, (int*)0, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_load=yes
+else
+  ax_cv_have___atomic_load=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_load" >&5
+$as_echo "$ax_cv_have___atomic_load" >&6; }
+
+    if test yes = $ax_cv_have___atomic_load; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_LOAD 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_store_n" >&5
+$as_echo_n "checking for __atomic_store_n... " >&6; }
+if ${ax_cv_have___atomic_store_n+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_store_n((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_store_n=yes
+else
+  ax_cv_have___atomic_store_n=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_store_n" >&5
+$as_echo "$ax_cv_have___atomic_store_n" >&6; }
+
+    if test yes = $ax_cv_have___atomic_store_n; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_STORE_N 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_store" >&5
+$as_echo_n "checking for __atomic_store... " >&6; }
+if ${ax_cv_have___atomic_store+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_store((int*)0, (int*)0, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_store=yes
+else
+  ax_cv_have___atomic_store=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_store" >&5
+$as_echo "$ax_cv_have___atomic_store" >&6; }
+
+    if test yes = $ax_cv_have___atomic_store; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_STORE 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_exchange_n" >&5
+$as_echo_n "checking for __atomic_exchange_n... " >&6; }
+if ${ax_cv_have___atomic_exchange_n+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_exchange_n((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_exchange_n=yes
+else
+  ax_cv_have___atomic_exchange_n=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_exchange_n" >&5
+$as_echo "$ax_cv_have___atomic_exchange_n" >&6; }
+
+    if test yes = $ax_cv_have___atomic_exchange_n; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_EXCHANGE_N 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_exchange" >&5
+$as_echo_n "checking for __atomic_exchange... " >&6; }
+if ${ax_cv_have___atomic_exchange+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_exchange((int*)0, (int*)0, (int*)0, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_exchange=yes
+else
+  ax_cv_have___atomic_exchange=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_exchange" >&5
+$as_echo "$ax_cv_have___atomic_exchange" >&6; }
+
+    if test yes = $ax_cv_have___atomic_exchange; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_EXCHANGE 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_compare_exchange_n" >&5
+$as_echo_n "checking for __atomic_compare_exchange_n... " >&6; }
+if ${ax_cv_have___atomic_compare_exchange_n+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_compare_exchange_n((int*)0, (int*)0, 0, 0, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_compare_exchange_n=yes
+else
+  ax_cv_have___atomic_compare_exchange_n=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_compare_exchange_n" >&5
+$as_echo "$ax_cv_have___atomic_compare_exchange_n" >&6; }
+
+    if test yes = $ax_cv_have___atomic_compare_exchange_n; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_COMPARE_EXCHANGE_N 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_compare_exchange" >&5
+$as_echo_n "checking for __atomic_compare_exchange... " >&6; }
+if ${ax_cv_have___atomic_compare_exchange+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_compare_exchange((int*)0, (int*)0, (int*)0, 0, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_compare_exchange=yes
+else
+  ax_cv_have___atomic_compare_exchange=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_compare_exchange" >&5
+$as_echo "$ax_cv_have___atomic_compare_exchange" >&6; }
+
+    if test yes = $ax_cv_have___atomic_compare_exchange; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_COMPARE_EXCHANGE 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_add_fetch" >&5
+$as_echo_n "checking for __atomic_add_fetch... " >&6; }
+if ${ax_cv_have___atomic_add_fetch+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_add_fetch((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_add_fetch=yes
+else
+  ax_cv_have___atomic_add_fetch=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_add_fetch" >&5
+$as_echo "$ax_cv_have___atomic_add_fetch" >&6; }
+
+    if test yes = $ax_cv_have___atomic_add_fetch; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_ADD_FETCH 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_sub_fetch" >&5
+$as_echo_n "checking for __atomic_sub_fetch... " >&6; }
+if ${ax_cv_have___atomic_sub_fetch+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_sub_fetch((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_sub_fetch=yes
+else
+  ax_cv_have___atomic_sub_fetch=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_sub_fetch" >&5
+$as_echo "$ax_cv_have___atomic_sub_fetch" >&6; }
+
+    if test yes = $ax_cv_have___atomic_sub_fetch; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_SUB_FETCH 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_and_fetch" >&5
+$as_echo_n "checking for __atomic_and_fetch... " >&6; }
+if ${ax_cv_have___atomic_and_fetch+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_and_fetch((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_and_fetch=yes
+else
+  ax_cv_have___atomic_and_fetch=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_and_fetch" >&5
+$as_echo "$ax_cv_have___atomic_and_fetch" >&6; }
+
+    if test yes = $ax_cv_have___atomic_and_fetch; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_AND_FETCH 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_xor_fetch" >&5
+$as_echo_n "checking for __atomic_xor_fetch... " >&6; }
+if ${ax_cv_have___atomic_xor_fetch+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_xor_fetch((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_xor_fetch=yes
+else
+  ax_cv_have___atomic_xor_fetch=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_xor_fetch" >&5
+$as_echo "$ax_cv_have___atomic_xor_fetch" >&6; }
+
+    if test yes = $ax_cv_have___atomic_xor_fetch; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_XOR_FETCH 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_or_fetch" >&5
+$as_echo_n "checking for __atomic_or_fetch... " >&6; }
+if ${ax_cv_have___atomic_or_fetch+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_or_fetch((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_or_fetch=yes
+else
+  ax_cv_have___atomic_or_fetch=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_or_fetch" >&5
+$as_echo "$ax_cv_have___atomic_or_fetch" >&6; }
+
+    if test yes = $ax_cv_have___atomic_or_fetch; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_OR_FETCH 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_nand_fetch" >&5
+$as_echo_n "checking for __atomic_nand_fetch... " >&6; }
+if ${ax_cv_have___atomic_nand_fetch+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_nand_fetch((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_nand_fetch=yes
+else
+  ax_cv_have___atomic_nand_fetch=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_nand_fetch" >&5
+$as_echo "$ax_cv_have___atomic_nand_fetch" >&6; }
+
+    if test yes = $ax_cv_have___atomic_nand_fetch; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_NAND_FETCH 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_fetch_add" >&5
+$as_echo_n "checking for __atomic_fetch_add... " >&6; }
+if ${ax_cv_have___atomic_fetch_add+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_fetch_add((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_fetch_add=yes
+else
+  ax_cv_have___atomic_fetch_add=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_fetch_add" >&5
+$as_echo "$ax_cv_have___atomic_fetch_add" >&6; }
+
+    if test yes = $ax_cv_have___atomic_fetch_add; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_FETCH_ADD 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_fetch_sub" >&5
+$as_echo_n "checking for __atomic_fetch_sub... " >&6; }
+if ${ax_cv_have___atomic_fetch_sub+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_fetch_sub((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_fetch_sub=yes
+else
+  ax_cv_have___atomic_fetch_sub=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_fetch_sub" >&5
+$as_echo "$ax_cv_have___atomic_fetch_sub" >&6; }
+
+    if test yes = $ax_cv_have___atomic_fetch_sub; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_FETCH_SUB 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_fetch_and" >&5
+$as_echo_n "checking for __atomic_fetch_and... " >&6; }
+if ${ax_cv_have___atomic_fetch_and+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_fetch_and((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_fetch_and=yes
+else
+  ax_cv_have___atomic_fetch_and=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_fetch_and" >&5
+$as_echo "$ax_cv_have___atomic_fetch_and" >&6; }
+
+    if test yes = $ax_cv_have___atomic_fetch_and; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_FETCH_AND 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_fetch_xor" >&5
+$as_echo_n "checking for __atomic_fetch_xor... " >&6; }
+if ${ax_cv_have___atomic_fetch_xor+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_fetch_xor((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_fetch_xor=yes
+else
+  ax_cv_have___atomic_fetch_xor=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_fetch_xor" >&5
+$as_echo "$ax_cv_have___atomic_fetch_xor" >&6; }
+
+    if test yes = $ax_cv_have___atomic_fetch_xor; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_FETCH_XOR 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_fetch_or" >&5
+$as_echo_n "checking for __atomic_fetch_or... " >&6; }
+if ${ax_cv_have___atomic_fetch_or+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_fetch_or((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_fetch_or=yes
+else
+  ax_cv_have___atomic_fetch_or=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_fetch_or" >&5
+$as_echo "$ax_cv_have___atomic_fetch_or" >&6; }
+
+    if test yes = $ax_cv_have___atomic_fetch_or; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_FETCH_OR 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_fetch_nand" >&5
+$as_echo_n "checking for __atomic_fetch_nand... " >&6; }
+if ${ax_cv_have___atomic_fetch_nand+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_fetch_nand((int*)0, 1, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_fetch_nand=yes
+else
+  ax_cv_have___atomic_fetch_nand=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_fetch_nand" >&5
+$as_echo "$ax_cv_have___atomic_fetch_nand" >&6; }
+
+    if test yes = $ax_cv_have___atomic_fetch_nand; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_FETCH_NAND 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_test_and_set" >&5
+$as_echo_n "checking for __atomic_test_and_set... " >&6; }
+if ${ax_cv_have___atomic_test_and_set+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_test_and_set((char*)0, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_test_and_set=yes
+else
+  ax_cv_have___atomic_test_and_set=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_test_and_set" >&5
+$as_echo "$ax_cv_have___atomic_test_and_set" >&6; }
+
+    if test yes = $ax_cv_have___atomic_test_and_set; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_TEST_AND_SET 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_clear" >&5
+$as_echo_n "checking for __atomic_clear... " >&6; }
+if ${ax_cv_have___atomic_clear+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_clear((_Bool*)0, __ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_clear=yes
+else
+  ax_cv_have___atomic_clear=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_clear" >&5
+$as_echo "$ax_cv_have___atomic_clear" >&6; }
+
+    if test yes = $ax_cv_have___atomic_clear; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_CLEAR 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_thread_fence" >&5
+$as_echo_n "checking for __atomic_thread_fence... " >&6; }
+if ${ax_cv_have___atomic_thread_fence+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_thread_fence(__ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_thread_fence=yes
+else
+  ax_cv_have___atomic_thread_fence=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_thread_fence" >&5
+$as_echo "$ax_cv_have___atomic_thread_fence" >&6; }
+
+    if test yes = $ax_cv_have___atomic_thread_fence; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_THREAD_FENCE 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_signal_fence" >&5
+$as_echo_n "checking for __atomic_signal_fence... " >&6; }
+if ${ax_cv_have___atomic_signal_fence+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_signal_fence(__ATOMIC_SEQ_CST)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_signal_fence=yes
+else
+  ax_cv_have___atomic_signal_fence=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_signal_fence" >&5
+$as_echo "$ax_cv_have___atomic_signal_fence" >&6; }
+
+    if test yes = $ax_cv_have___atomic_signal_fence; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_SIGNAL_FENCE 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_always_lock_free" >&5
+$as_echo_n "checking for __atomic_always_lock_free... " >&6; }
+if ${ax_cv_have___atomic_always_lock_free+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_always_lock_free(4, 0)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_always_lock_free=yes
+else
+  ax_cv_have___atomic_always_lock_free=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_always_lock_free" >&5
+$as_echo "$ax_cv_have___atomic_always_lock_free" >&6; }
+
+    if test yes = $ax_cv_have___atomic_always_lock_free; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_ALWAYS_LOCK_FREE 1
+_ACEOF
+
+fi
+
+
+
+
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for __atomic_is_lock_free" >&5
+$as_echo_n "checking for __atomic_is_lock_free... " >&6; }
+if ${ax_cv_have___atomic_is_lock_free+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+
+        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+            __atomic_is_lock_free(4, 0)
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ax_cv_have___atomic_is_lock_free=yes
+else
+  ax_cv_have___atomic_is_lock_free=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_have___atomic_is_lock_free" >&5
+$as_echo "$ax_cv_have___atomic_is_lock_free" >&6; }
+
+    if test yes = $ax_cv_have___atomic_is_lock_free; then :
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE___ATOMIC_IS_LOCK_FREE 1
+_ACEOF
+
+fi
+
+
+
+if test x"$ax_cv_have___atomic_load_n" = xno -o \
+        x"$ax_cv_have___atomic_load" = xno -o \
+        x"$ax_cv_have___atomic_store_n" = xno -o \
+        x"$ax_cv_have___atomic_store" = xno -o \
+        x"$ax_cv_have___atomic_exchange_n" = xno -o \
+        x"$ax_cv_have___atomic_exchange" = xno -o \
+        x"$ax_cv_have___atomic_compare_exchange_n" = xno -o \
+        x"$ax_cv_have___atomic_compare_exchange" = xno -o \
+        x"$ax_cv_have___atomic_add_fetch" = xno -o \
+        x"$ax_cv_have___atomic_sub_fetch" = xno -o \
+        x"$ax_cv_have___atomic_and_fetch" = xno -o \
+        x"$ax_cv_have___atomic_xor_fetch" = xno -o \
+        x"$ax_cv_have___atomic_or_fetch" = xno -o \
+        x"$ax_cv_have___atomic_nand_fetch" = xno -o \
+        x"$ax_cv_have___atomic_fetch_add" = xno -o \
+        x"$ax_cv_have___atomic_fetch_sub" = xno -o \
+        x"$ax_cv_have___atomic_fetch_and" = xno -o \
+        x"$ax_cv_have___atomic_fetch_xor" = xno -o \
+        x"$ax_cv_have___atomic_fetch_or" = xno -o \
+        x"$ax_cv_have___atomic_fetch_nand" = xno -o \
+        x"$ax_cv_have___atomic_test_and_set" = xno -o \
+        x"$ax_cv_have___atomic_clear" = xno -o \
+        x"$ax_cv_have___atomic_thread_fence" = xno -o \
+        x"$ax_cv_have___atomic_signal_fence" = xno -o \
+        x"$ax_cv_have___atomic_always_lock_free" = xno -o \
+        x"$ax_cv_have___atomic_is_lock_free" = xno; then
+    as_fn_error $? "__atomic builtins required" "$LINENO" 5
+fi
+
+#
+# Check for libatomic
+#
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing __atomic_compare_exchange_16" >&5
+$as_echo_n "checking for library containing __atomic_compare_exchange_16... " >&6; }
+if ${ac_cv_search___atomic_compare_exchange_16+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_func_search_save_LIBS=$LIBS
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char __atomic_compare_exchange_16 ();
+int
+main ()
+{
+return __atomic_compare_exchange_16 ();
+  ;
+  return 0;
+}
+_ACEOF
+for ac_lib in '' atomic; do
+  if test -z "$ac_lib"; then
+    ac_res="none required"
+  else
+    ac_res=-l$ac_lib
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  fi
+  if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_search___atomic_compare_exchange_16=$ac_res
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext
+  if ${ac_cv_search___atomic_compare_exchange_16+:} false; then :
+  break
+fi
+done
+if ${ac_cv_search___atomic_compare_exchange_16+:} false; then :
+
+else
+  ac_cv_search___atomic_compare_exchange_16=no
+fi
+rm conftest.$ac_ext
+LIBS=$ac_func_search_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search___atomic_compare_exchange_16" >&5
+$as_echo "$ac_cv_search___atomic_compare_exchange_16" >&6; }
+ac_res=$ac_cv_search___atomic_compare_exchange_16
+if test "$ac_res" != no; then :
+  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+fi
+
+
+#
+# Determine mutex type
+#
+
+if test x"$mutex_type" = xauto; then
+    if test x"$have_osx_spinlock" = xyes; then
+        mutex_type=osx_spinlock
+    elif test x"$have_pthread_spinlock" = xyes; then
+        mutex_type=pthread_spinlock
+    else
+        mutex_type=atomic_spinlock
+    fi
+fi
+
+USE_PTHREAD_MUTEX=0
+USE_PTHREAD_SPINLOCK=0
+USE_OSX_SPINLOCK=0
+USE_OMP_LOCK=0
+USE_ATOMIC_SPINLOCK=0
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking mutex type" >&5
+$as_echo_n "checking mutex type... " >&6; }
+if test x"$mutex_type" = xpthread_mutex; then
+    if test x"$have_pthread_mutex" = xno; then
+        as_fn_error $? "pthread mutex requested but not available" "$LINENO" 5
+    fi
+    USE_PTHREAD_MUTEX=1
+elif test x"$mutex_type" = xpthread_spinlock; then
+    if test x"$have_pthread_spinlock" = xno; then
+        as_fn_error $? "pthread spinlock requested but not available" "$LINENO" 5
+    fi
+    USE_PTHREAD_SPINLOCK=1
+elif test x"$mutex_type" = xosx_spinlock; then
+    if test x"$have_osx_spinlock" = xno; then
+        as_fn_error $? "OSX OSSpinLock requested but not available" "$LINENO" 5
+    fi
+    USE_OSX_SPINLOCK=1
+elif test x"$mutex_type" = xomp_lock; then
+    if test x"$have_openmp" = xno; then
+        as_fn_error $? "omp_lock requested but not available" "$LINENO" 5
+    fi
+    USE_OMP_LOCK=1
+elif test x"$mutex_type" = xatomic_spinlock; then
+    USE_ATOMIC_SPINLOCK=1
+else
+    as_fn_error $? "invalid mutex type specified" "$LINENO" 5
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $mutex_type" >&5
+$as_echo "$mutex_type" >&6; }
+
+
+
+
+
+
+
+#
+# Determine barrier type
+#
+
+if test x"$barrier_type" = xauto; then
+    barrier_type=spin_barrier
+fi
+
+USE_PTHREAD_BARRIER=0
+USE_SPIN_BARRIER=0
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking barrier type" >&5
+$as_echo_n "checking barrier type... " >&6; }
+if test x"$barrier_type" = xpthread_barrier; then
+    if test x"$have_pthread_barrier" = xno; then
+        as_fn_error $? "pthread barrier requested but not available" "$LINENO" 5
+    fi
+    USE_PTHREAD_BARRIER=1
+elif test x"$barrier_type" = xspin_barrier; then
+    USE_SPIN_BARRIER=1
+else
+    as_fn_error $? "invalid barrier type specified" "$LINENO" 5
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $barrier_type" >&5
+$as_echo "$barrier_type" >&6; }
+
+
+
+
+#
+# Determine thread model
+#
+
+if test x"$thread_model" = xauto; then
+    if test x"$have_openmp" = xyes; then
+        thread_model=openmp
+    elif test x"$have_pthreads" = xyes; then
+        thread_model=pthread
+    elif test x"$have_windows" = xyes; then
+        thread_model=windows
+    elif test x"$have_tbb" = xyes; then
+        thread_model=tbb
+    elif test x"$have_ppl" = xyes; then
+        thread_model=ppl
+    elif test x"$have_dispatch" = xyes; then
+        thread_model=dispatch
+    else
+        thread_model=none
+    fi
+elif test x"$thread_model" = xtask; then
+    if test x"$have_tbb" = xyes; then
+        thread_model=tbb
+    elif test x"$have_ppl" = xyes; then
+        thread_model=ppl
+    elif test x"$have_dispatch" = xyes; then
+        thread_model=dispatch
+    elif test x"$have_openmp" = xyes; then
+        thread_model=omptask
+    else
+        thread_model=none
+    fi
+fi
+
+USE_OPENMP_THREADS=0
+USE_PTHREADS_THREADS=0
+USE_TBB_THREADS=0
+USE_DISPATCH_THREADS=0
+USE_WINDOWS_THREADS=0
+USE_PPL_THREADS=0
+USE_OMPTASK_THREADS=0
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking thread model" >&5
+$as_echo_n "checking thread model... " >&6; }
+if test x"$thread_model" = xopenmp; then
+    if test x"$have_openmp" = xno; then
+        as_fn_error $? "openmp requested but not available" "$LINENO" 5
+    fi
+    USE_OPENMP_THREADS=1
+    CFLAGS="$CFLAGS $OPENMP_CFLAGS"
+    CXXFLAGS="$CXXFLAGS $OPENMP_CFLAGS"
+elif test x"$thread_model" = xomptask; then
+    if test x"$have_openmp" = xno; then
+        as_fn_error $? "omptask requested but not available" "$LINENO" 5
+    fi
+    USE_OMPTASK_THREADS=1
+    CFLAGS="$CFLAGS $OPENMP_CFLAGS"
+    CXXFLAGS="$CXXFLAGS $OPENMP_CFLAGS"
+elif test x"$thread_model" = xpthread || \
+     test x"$thread_model" = xpthreads; then
+    if test x"$have_pthreads" = xno; then
+        as_fn_error $? "pthreads requested but not available" "$LINENO" 5
+    fi
+    USE_PTHREADS_THREADS=1
+    LIBS="$LIBS $PTHREAD_LIBS"
+    CFLAGS="$CFLAGS $PTHREAD_CFLAGS"
+elif test x"$thread_model" = xtbb; then
+    if test x"$have_tbb" = xno; then
+        as_fn_error $? "tbb requested but not available" "$LINENO" 5
+    fi
+    USE_TBB_THREADS=1
+    LIBS="$LIBS $TBB_LIBS"
+elif test x"$thread_model" = xdispatch || \
+     test x"$thread_model" = xlibdispatch || \
+     test x"$thread_model" = xgcd; then
+    if test x"$have_dispatch" = xno; then
+        as_fn_error $? "dispatch requested but not available" "$LINENO" 5
+    fi
+    USE_DISPATCH_THREADS=1
+    LIBS="$LIBS $DISPATCH_LIBS"
+elif test x"$thread_model" = xwindows || \
+     test x"$thread_model" = xwinthreads; then
+    if test x"$have_windows" = xno; then
+        as_fn_error $? "winthreads requested but not available" "$LINENO" 5
+    fi
+    USE_WINDOWS_THREADS=1
+elif test x"$thread_model" = xppl; then
+    if test x"$have_windows" = xno || \
+       test x"$have_ppl" = xno; then
+        as_fn_error $? "ppl requested but not available" "$LINENO" 5
+    fi
+    USE_PPL_THREADS=1
+elif test x"$thread_model" != xnone; then
+    as_fn_error $? "Invalid threading model specified." "$LINENO" 5
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $thread_model" >&5
+$as_echo "$thread_model" >&6; }
+
+
+
+
+
+
+
+
+
+ if test x$USE_TBB_THREADS = x1 || \
+                             test x$USE_PPL_THREADS = x1; then
+  CPLUSPLUS_TRUE=
+  CPLUSPLUS_FALSE='#'
+else
+  CPLUSPLUS_TRUE='#'
+  CPLUSPLUS_FALSE=
+fi
+
+
+if test x$USE_TBB_THREADS = x1 || \
+   test x$USE_PPL_THREADS = x1; then
+        ax_cxx_compile_cxx11_required=true
+  ac_ext=cpp
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+  ac_success=no
+
+
+
+    if test x$ac_success = xno; then
+    for switch in -std=c++11 -std=c++0x; do
+      cachevar=`$as_echo "ax_cv_cxx_compile_cxx11_$switch" | $as_tr_sh`
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CXX supports C++11 features with $switch" >&5
+$as_echo_n "checking whether $CXX supports C++11 features with $switch... " >&6; }
+if eval \${$cachevar+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_save_CXXFLAGS="$CXXFLAGS"
+         CXXFLAGS="$CXXFLAGS $switch"
+         cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+  template <typename T>
+    struct check
+    {
+      static_assert(sizeof(int) <= sizeof(T), "not big enough");
+    };
+
+    typedef check<check<bool>> right_angle_brackets;
+
+    int a;
+    decltype(a) b;
+
+    typedef check<int> check_type;
+    check_type c;
+    check_type&& cr = static_cast<check_type&&>(c);
+
+    auto d = a;
+    auto l = [](){};
+    // Prevent Clang error: unused variable 'l' [-Werror,-Wunused-variable]
+    struct use_l { use_l() { l(); } };
+
+    // http://stackoverflow.com/questions/13728184/template-aliases-and-sfinae
+    // Clang 3.1 fails with headers of libstd++ 4.8.3 when using std::function because of this
+    namespace test_template_alias_sfinae {
+        struct foo {};
+
+        template<typename T>
+        using member = typename T::member_type;
+
+        template<typename T>
+        void func(...) {}
+
+        template<typename T>
+        void func(member<T>*) {}
+
+        void test();
+
+        void test() {
+            func<foo>(0);
+        }
+    }
+
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  eval $cachevar=yes
+else
+  eval $cachevar=no
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+         CXXFLAGS="$ac_save_CXXFLAGS"
+fi
+eval ac_res=\$$cachevar
+	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
+$as_echo "$ac_res" >&6; }
+      if eval test x\$$cachevar = xyes; then
+        CXXFLAGS="$CXXFLAGS $switch"
+        ac_success=yes
+        break
+      fi
+    done
+  fi
+  ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+  if test x$ax_cxx_compile_cxx11_required = xtrue; then
+    if test x$ac_success = xno; then
+      as_fn_error $? "*** A compiler with support for C++11 language features is required." "$LINENO" 5
+    fi
+  else
+    if test x$ac_success = xno; then
+      HAVE_CXX11=0
+      { $as_echo "$as_me:${as_lineno-$LINENO}: No compiler with C++11 support was found" >&5
+$as_echo "$as_me: No compiler with C++11 support was found" >&6;}
+    else
+      HAVE_CXX11=1
+
+$as_echo "#define HAVE_CXX11 1" >>confdefs.h
+
+    fi
+
+
+  fi
+
+fi
+
 ac_config_files="$ac_config_files Makefile tci/tci_config.h"
 
 cat >confcache <<\_ACEOF
@@ -18043,8 +18756,8 @@ if test -z "${am__fastdepCXX_TRUE}" && test -z "${am__fastdepCXX_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCXX\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
-if test -z "${USE_TBB_TRUE}" && test -z "${USE_TBB_FALSE}"; then
-  as_fn_error $? "conditional \"USE_TBB\" was never defined.
+if test -z "${CPLUSPLUS_TRUE}" && test -z "${CPLUSPLUS_FALSE}"; then
+  as_fn_error $? "conditional \"CPLUSPLUS\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

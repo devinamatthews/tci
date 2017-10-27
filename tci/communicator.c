@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
+#include <stdio.h>
 
 static tci_comm _tci_single = {NULL, 1, 0, 1, 0};
 tci_comm* const tci_single = &_tci_single;
@@ -100,8 +102,8 @@ int tci_comm_gang(tci_comm* parent, tci_comm* child,
         case TCI_EVENLY:
         {
             block = (n*tid)/nt;
-            unsigned block_first = (block*nt)/n;
-            unsigned block_last = ((block+1)*nt)/n;
+            unsigned block_first = (block*nt+n-1)/n;
+            unsigned block_last = ((block+1)*nt+n-1)/n;
             new_tid = tid-block_first;
             new_nthread = block_last-block_first;
         }
@@ -136,6 +138,7 @@ int tci_comm_gang(tci_comm* parent, tci_comm* child,
 
     if (!parent->context || (type & TCI_NO_CONTEXT))
     {
+        abort();
         tci_comm_init(child, NULL, new_nthread, new_tid, n, block);
     }
     else
@@ -162,7 +165,7 @@ int tci_comm_gang(tci_comm* parent, tci_comm* child,
     return 0;
 }
 
-#if TCI_USE_OPENMP_THREADS || TCI_USE_PTHREAD_THREADS || TCI_USE_WINDOWS_THREADS
+#if TCI_USE_OPENMP_THREADS || TCI_USE_PTHREADS_THREADS || TCI_USE_WINDOWS_THREADS
 
 static void tci_distribute(unsigned n, unsigned idx, tci_comm* comm,
                            tci_range range, tci_range_func func, void* payload)
@@ -193,7 +196,7 @@ static void tci_distribute_2d(unsigned num, unsigned idx, tci_comm* comm,
     }
 
     unsigned m, n;
-    tci_partition_2x2(num, range_m, num, range_n, num, &m, &n);
+    tci_partition_2x2(num, range_m.size, num, range_n.size, num, &m, &n);
 
     unsigned idx_m = idx % m;
     unsigned idx_n = idx / m;

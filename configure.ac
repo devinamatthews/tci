@@ -8,6 +8,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC([icc gcc clang])
 AC_PROG_CC_C99
 AC_PROG_CXX([icpc g++ clang++])
+LT_INIT
 
 #
 # Get user preferences
@@ -29,7 +30,7 @@ AC_ARG_ENABLE([thread-model], AS_HELP_STRING([--enable-thread-model@<:@=model@:>
     [thread_model=$enable_thread_model], [thread_model=auto])
 
 AC_ARG_ENABLE([threading], AS_HELP_STRING([--enable-threading=@<:@=model@:>@],
-    [alias for --enable-thread-model], [thread_model=$enable_threading], [])
+    [alias for --enable-thread-model]), [thread_model=$enable_threading], [])
     
 if test x"$thread_model" = xno; then
     thread_model=none
@@ -231,6 +232,12 @@ if test x"$ax_cv_have___atomic_load_n" = xno -o \
 fi
 
 #
+# Check for libatomic
+#
+
+AC_SEARCH_LIBS([__atomic_compare_exchange_16], [atomic])
+
+#
 # Determine mutex type
 #
 
@@ -415,12 +422,13 @@ AC_SUBST([USE_PPL_THREADS])
 AC_SUBST([USE_WINDOWS_THREADS])
 AC_SUBST([USE_DISPATCH_THREADS])
 
+AM_CONDITIONAL([CPLUSPLUS], [test x$USE_TBB_THREADS = x1 || \
+                             test x$USE_PPL_THREADS = x1])
+
 if test x$USE_TBB_THREADS = x1 || \
    test x$USE_PPL_THREADS = x1; then
     AX_CXX_COMPILE_STDCXX_11([noext])
 fi
-
-LT_INIT
 
 AC_CONFIG_FILES([Makefile tci/tci_config.h])
 AC_OUTPUT

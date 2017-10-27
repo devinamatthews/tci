@@ -88,16 +88,17 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@USE_TBB_TRUE@am__append_1 = tci/tbb/parallel.c \
-@USE_TBB_TRUE@						 tci/tbb/task_set.cxx
+@CPLUSPLUS_TRUE@am__append_1 = tci/communicator_cpp.cxx \
+@CPLUSPLUS_TRUE@						 tci/task_set_cpp.cxx
 
-@USE_TBB_FALSE@am__append_2 = tci/thread/parallel.c \
-@USE_TBB_FALSE@						 tci/thread/task_set.c
+@CPLUSPLUS_FALSE@am__append_2 = tci/communicator.c \
+@CPLUSPLUS_FALSE@						 tci/task_set.c
 
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_cxx_compile_stdcxx_11.m4 \
-	$(top_srcdir)/m4/ax_gcc_builtin.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/m4/ax_gcc_builtin.m4 \
+	$(top_srcdir)/m4/ax_pthread.m4 $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
 	$(top_srcdir)/m4/ltversion.m4 $(top_srcdir)/m4/lt~obsolete.m4 \
 	$(top_srcdir)/configure.ac
@@ -141,19 +142,17 @@ am__uninstall_files_from_dir = { \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 lib_libtci_la_LIBADD =
-am__lib_libtci_la_SOURCES_DIST = tci/common/barrier.c \
-	tci/common/communicator.c tci/common/context.c \
-	tci/common/mutex.c tci/common/parallel.c tci/common/slot.c \
-	tci/common/work_item.c tci/tbb/parallel.c tci/tbb/task_set.cxx \
-	tci/thread/parallel.c tci/thread/task_set.c
+am__lib_libtci_la_SOURCES_DIST = tci/barrier.c tci/context.c \
+	tci/mutex.c tci/parallel.c tci/slot.c tci/work_item.c \
+	tci/communicator_cpp.cxx tci/task_set_cpp.cxx \
+	tci/communicator.c tci/task_set.c
 am__dirstamp = $(am__leading_dot)dirstamp
-@USE_TBB_TRUE@am__objects_1 = tci/tbb/parallel.lo tci/tbb/task_set.lo
-@USE_TBB_FALSE@am__objects_2 = tci/thread/parallel.lo \
-@USE_TBB_FALSE@	tci/thread/task_set.lo
-am_lib_libtci_la_OBJECTS = tci/common/barrier.lo \
-	tci/common/communicator.lo tci/common/context.lo \
-	tci/common/mutex.lo tci/common/parallel.lo tci/common/slot.lo \
-	tci/common/work_item.lo $(am__objects_1) $(am__objects_2)
+@CPLUSPLUS_TRUE@am__objects_1 = tci/communicator_cpp.lo \
+@CPLUSPLUS_TRUE@	tci/task_set_cpp.lo
+@CPLUSPLUS_FALSE@am__objects_2 = tci/communicator.lo tci/task_set.lo
+am_lib_libtci_la_OBJECTS = tci/barrier.lo tci/context.lo tci/mutex.lo \
+	tci/parallel.lo tci/slot.lo tci/work_item.lo $(am__objects_1) \
+	$(am__objects_2)
 lib_libtci_la_OBJECTS = $(am_lib_libtci_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -325,21 +324,28 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PTHREAD_CC = @PTHREAD_CC@
+PTHREAD_CFLAGS = @PTHREAD_CFLAGS@
+PTHREAD_LIBS = @PTHREAD_LIBS@
 RANLIB = @RANLIB@
 SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 USE_ATOMIC_SPINLOCK = @USE_ATOMIC_SPINLOCK@
+USE_DISPATCH_THREADS = @USE_DISPATCH_THREADS@
+USE_OMPTASK_THREADS = @USE_OMPTASK_THREADS@
 USE_OMP_LOCK = @USE_OMP_LOCK@
 USE_OPENMP_THREADS = @USE_OPENMP_THREADS@
 USE_OSX_SPINLOCK = @USE_OSX_SPINLOCK@
+USE_PPL_THREADS = @USE_PPL_THREADS@
 USE_PTHREADS_THREADS = @USE_PTHREADS_THREADS@
 USE_PTHREAD_BARRIER = @USE_PTHREAD_BARRIER@
 USE_PTHREAD_MUTEX = @USE_PTHREAD_MUTEX@
 USE_PTHREAD_SPINLOCK = @USE_PTHREAD_SPINLOCK@
 USE_SPIN_BARRIER = @USE_SPIN_BARRIER@
 USE_TBB_THREADS = @USE_TBB_THREADS@
+USE_WINDOWS_THREADS = @USE_WINDOWS_THREADS@
 VERSION = @VERSION@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -354,6 +360,7 @@ am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
+ax_pthread_config = @ax_pthread_config@
 bindir = @bindir@
 build = @build@
 build_alias = @build_alias@
@@ -395,9 +402,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = lib/libtci.la
-lib_libtci_la_SOURCES = tci/common/barrier.c tci/common/communicator.c \
-	tci/common/context.c tci/common/mutex.c tci/common/parallel.c \
-	tci/common/slot.c tci/common/work_item.c $(am__append_1) \
+lib_libtci_la_SOURCES = tci/barrier.c tci/context.c tci/mutex.c \
+	tci/parallel.c tci/slot.c tci/work_item.c $(am__append_1) \
 	$(am__append_2)
 nobase_include_HEADERS = tci.h \
 						 tci/tci_config.h \
@@ -486,46 +492,23 @@ clean-libLTLIBRARIES:
 	  echo rm -f $${locs}; \
 	  rm -f $${locs}; \
 	}
-tci/common/$(am__dirstamp):
-	@$(MKDIR_P) tci/common
-	@: > tci/common/$(am__dirstamp)
-tci/common/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) tci/common/$(DEPDIR)
-	@: > tci/common/$(DEPDIR)/$(am__dirstamp)
-tci/common/barrier.lo: tci/common/$(am__dirstamp) \
-	tci/common/$(DEPDIR)/$(am__dirstamp)
-tci/common/communicator.lo: tci/common/$(am__dirstamp) \
-	tci/common/$(DEPDIR)/$(am__dirstamp)
-tci/common/context.lo: tci/common/$(am__dirstamp) \
-	tci/common/$(DEPDIR)/$(am__dirstamp)
-tci/common/mutex.lo: tci/common/$(am__dirstamp) \
-	tci/common/$(DEPDIR)/$(am__dirstamp)
-tci/common/parallel.lo: tci/common/$(am__dirstamp) \
-	tci/common/$(DEPDIR)/$(am__dirstamp)
-tci/common/slot.lo: tci/common/$(am__dirstamp) \
-	tci/common/$(DEPDIR)/$(am__dirstamp)
-tci/common/work_item.lo: tci/common/$(am__dirstamp) \
-	tci/common/$(DEPDIR)/$(am__dirstamp)
-tci/tbb/$(am__dirstamp):
-	@$(MKDIR_P) tci/tbb
-	@: > tci/tbb/$(am__dirstamp)
-tci/tbb/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) tci/tbb/$(DEPDIR)
-	@: > tci/tbb/$(DEPDIR)/$(am__dirstamp)
-tci/tbb/parallel.lo: tci/tbb/$(am__dirstamp) \
-	tci/tbb/$(DEPDIR)/$(am__dirstamp)
-tci/tbb/task_set.lo: tci/tbb/$(am__dirstamp) \
-	tci/tbb/$(DEPDIR)/$(am__dirstamp)
-tci/thread/$(am__dirstamp):
-	@$(MKDIR_P) tci/thread
-	@: > tci/thread/$(am__dirstamp)
-tci/thread/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) tci/thread/$(DEPDIR)
-	@: > tci/thread/$(DEPDIR)/$(am__dirstamp)
-tci/thread/parallel.lo: tci/thread/$(am__dirstamp) \
-	tci/thread/$(DEPDIR)/$(am__dirstamp)
-tci/thread/task_set.lo: tci/thread/$(am__dirstamp) \
-	tci/thread/$(DEPDIR)/$(am__dirstamp)
+tci/$(am__dirstamp):
+	@$(MKDIR_P) tci
+	@: > tci/$(am__dirstamp)
+tci/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) tci/$(DEPDIR)
+	@: > tci/$(DEPDIR)/$(am__dirstamp)
+tci/barrier.lo: tci/$(am__dirstamp) tci/$(DEPDIR)/$(am__dirstamp)
+tci/context.lo: tci/$(am__dirstamp) tci/$(DEPDIR)/$(am__dirstamp)
+tci/mutex.lo: tci/$(am__dirstamp) tci/$(DEPDIR)/$(am__dirstamp)
+tci/parallel.lo: tci/$(am__dirstamp) tci/$(DEPDIR)/$(am__dirstamp)
+tci/slot.lo: tci/$(am__dirstamp) tci/$(DEPDIR)/$(am__dirstamp)
+tci/work_item.lo: tci/$(am__dirstamp) tci/$(DEPDIR)/$(am__dirstamp)
+tci/communicator_cpp.lo: tci/$(am__dirstamp) \
+	tci/$(DEPDIR)/$(am__dirstamp)
+tci/task_set_cpp.lo: tci/$(am__dirstamp) tci/$(DEPDIR)/$(am__dirstamp)
+tci/communicator.lo: tci/$(am__dirstamp) tci/$(DEPDIR)/$(am__dirstamp)
+tci/task_set.lo: tci/$(am__dirstamp) tci/$(DEPDIR)/$(am__dirstamp)
 lib/$(am__dirstamp):
 	@$(MKDIR_P) lib
 	@: > lib/$(am__dirstamp)
@@ -535,27 +518,22 @@ lib/libtci.la: $(lib_libtci_la_OBJECTS) $(lib_libtci_la_DEPENDENCIES) $(EXTRA_li
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
-	-rm -f tci/common/*.$(OBJEXT)
-	-rm -f tci/common/*.lo
-	-rm -f tci/tbb/*.$(OBJEXT)
-	-rm -f tci/tbb/*.lo
-	-rm -f tci/thread/*.$(OBJEXT)
-	-rm -f tci/thread/*.lo
+	-rm -f tci/*.$(OBJEXT)
+	-rm -f tci/*.lo
 
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@tci/common/$(DEPDIR)/barrier.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tci/common/$(DEPDIR)/communicator.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tci/common/$(DEPDIR)/context.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tci/common/$(DEPDIR)/mutex.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tci/common/$(DEPDIR)/parallel.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tci/common/$(DEPDIR)/slot.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tci/common/$(DEPDIR)/work_item.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tci/tbb/$(DEPDIR)/parallel.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tci/tbb/$(DEPDIR)/task_set.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tci/thread/$(DEPDIR)/parallel.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@tci/thread/$(DEPDIR)/task_set.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tci/$(DEPDIR)/barrier.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tci/$(DEPDIR)/communicator.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tci/$(DEPDIR)/communicator_cpp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tci/$(DEPDIR)/context.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tci/$(DEPDIR)/mutex.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tci/$(DEPDIR)/parallel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tci/$(DEPDIR)/slot.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tci/$(DEPDIR)/task_set.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tci/$(DEPDIR)/task_set_cpp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@tci/$(DEPDIR)/work_item.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)depbase=`echo $@ | sed 's|[^/]*$$|$(DEPDIR)/&|;s|\.o$$||'`;\
@@ -611,9 +589,7 @@ mostlyclean-libtool:
 clean-libtool:
 	-rm -rf .libs _libs
 	-rm -rf lib/.libs lib/_libs
-	-rm -rf tci/common/.libs tci/common/_libs
-	-rm -rf tci/tbb/.libs tci/tbb/_libs
-	-rm -rf tci/thread/.libs tci/thread/_libs
+	-rm -rf tci/.libs tci/_libs
 
 distclean-libtool:
 	-rm -f libtool config.lt
@@ -898,12 +874,8 @@ distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
 	-rm -f lib/$(am__dirstamp)
-	-rm -f tci/common/$(DEPDIR)/$(am__dirstamp)
-	-rm -f tci/common/$(am__dirstamp)
-	-rm -f tci/tbb/$(DEPDIR)/$(am__dirstamp)
-	-rm -f tci/tbb/$(am__dirstamp)
-	-rm -f tci/thread/$(DEPDIR)/$(am__dirstamp)
-	-rm -f tci/thread/$(am__dirstamp)
+	-rm -f tci/$(DEPDIR)/$(am__dirstamp)
+	-rm -f tci/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -915,7 +887,7 @@ clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
 
 distclean: distclean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -rf tci/common/$(DEPDIR) tci/tbb/$(DEPDIR) tci/thread/$(DEPDIR)
+	-rm -rf tci/$(DEPDIR)
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-libtool distclean-tags
@@ -963,7 +935,7 @@ installcheck-am:
 maintainer-clean: maintainer-clean-am
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-	-rm -rf tci/common/$(DEPDIR) tci/tbb/$(DEPDIR) tci/thread/$(DEPDIR)
+	-rm -rf tci/$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
@@ -1005,6 +977,9 @@ uninstall-am: uninstall-libLTLIBRARIES uninstall-nobase_includeHEADERS
 
 .PRECIOUS: Makefile
 
+
+%_cpp.cxx: %.c
+	@cp $< $@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
